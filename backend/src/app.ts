@@ -1,0 +1,23 @@
+import express from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import cookieParser from 'cookie-parser';
+import { env } from './config/env.js';
+import { authRouter } from './modules/auth/auth.routes.js';
+import { operationsRouter } from './modules/operations/operations.routes.js';
+import { authenticate } from './middlewares/auth.middleware.js';
+import { errorHandler } from './middlewares/error.middleware.js';
+import { notFound } from './middlewares/notFound.middleware.js';
+
+export const app = express();
+app.use(helmet());
+app.use(cors({ origin: env.FRONTEND_URL, credentials: true }));
+app.use(compression());
+app.use(express.json({ limit: '1mb' }));
+app.use(cookieParser());
+app.get('/health', (_req, res) => res.json({ data: { status: 'ok' } }));
+app.use('/api/v1/auth', authRouter);
+app.use('/api/v1', authenticate, operationsRouter);
+app.use(notFound);
+app.use(errorHandler);
