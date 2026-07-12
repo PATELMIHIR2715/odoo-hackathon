@@ -21,9 +21,34 @@ export function Sidebar() {
 
   return (
     <aside className="hidden w-72 flex-col border-r border-border/80 bg-background p-6 lg:flex">
-      <div className="mb-8">
-        <p className="text-sm font-semibold uppercase tracking-[0.35em] text-primary">FleetOS</p>
-        <p className="mt-2 text-sm text-muted-foreground">Operations control center</p>
+      <div className="mb-8 flex items-center gap-3.5 select-none">
+        {/* Modern styled logo mark */}
+        <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr from-primary to-purple-500 text-white shadow-md shadow-primary/20">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-5.5 w-5.5"
+          >
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
+        </div>
+
+        {/* Brand name and description */}
+        <div className="flex flex-col">
+          <span className="font-extrabold text-base tracking-tight bg-gradient-to-r from-primary to-purple-400 bg-clip-text text-transparent">
+            FleetOS
+          </span>
+          <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-widest mt-0.5">
+            Control Center
+          </span>
+        </div>
       </div>
 
       <nav className="space-y-1">
