@@ -857,9 +857,105 @@ Success `200`:
 
 Success `200`: KPI object.
 
+### `GET /dashboard/overview`
+
+Query params: `vehicleType`, `status`, `region`, `recentTripsLimit`
+
+Success `200`:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": {
+    "filters": {
+      "vehicleType": "VAN",
+      "status": "AVAILABLE",
+      "region": "Gujarat"
+    },
+    "kpis": {
+      "activeVehicles": 53,
+      "availableVehicles": 42,
+      "inMaintenanceVehicles": 5,
+      "activeTrips": 18,
+      "pendingTrips": 9,
+      "driversOnDuty": 26,
+      "fleetUtilizationPercent": 81
+    },
+    "recentTrips": [
+      {
+        "id": "uuid",
+        "source": "Gandhinagar Depot",
+        "destination": "Ahmedabad Hub",
+        "cargoWeightKg": 700,
+        "plannedDistance": 38,
+        "actualDistance": null,
+        "fuelConsumedL": null,
+        "status": "DRAFT",
+        "createdAt": "2026-07-12T10:00:00.000Z",
+        "updatedAt": "2026-07-12T10:00:00.000Z",
+        "vehicle": {
+          "id": "uuid",
+          "registrationNumber": "VAN-05",
+          "name": "VAN-05",
+          "type": "VAN",
+          "status": "AVAILABLE"
+        },
+        "driver": {
+          "id": "uuid",
+          "name": "Alex",
+          "licenseNumber": "B1234567",
+          "status": "AVAILABLE"
+        }
+      }
+    ],
+    "vehicleStatusBreakdown": [
+      { "status": "AVAILABLE", "count": 42 },
+      { "status": "ON_TRIP", "count": 9 },
+      { "status": "IN_SHOP", "count": 5 },
+      { "status": "RETIRED", "count": 3 }
+    ],
+    "tripStatusBreakdown": [
+      { "status": "DRAFT", "count": 9 },
+      { "status": "DISPATCHED", "count": 18 },
+      { "status": "COMPLETED", "count": 53 },
+      { "status": "CANCELLED", "count": 2 }
+    ],
+    "driverStatusBreakdown": [
+      { "status": "AVAILABLE", "count": 30 },
+      { "status": "ON_TRIP", "count": 26 },
+      { "status": "OFF_DUTY", "count": 4 },
+      { "status": "SUSPENDED", "count": 1 }
+    ]
+  }
+}
+```
+
 ### `GET /analytics/reports/fuel-efficiency`
 
 Query param: `vehicleId`
+
+### `GET /analytics/reports/monthly-trend`
+
+Query param: `vehicleId`
+
+Success `200`:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": [
+    {
+      "month": "2026-07",
+      "fuelCost": 18000,
+      "maintenanceCost": 12000,
+      "expenseCost": 4070,
+      "totalCost": 34070
+    }
+  ]
+}
+```
 
 ### `GET /analytics/reports/fleet-utilization`
 

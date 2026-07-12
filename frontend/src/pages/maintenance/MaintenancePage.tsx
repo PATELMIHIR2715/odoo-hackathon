@@ -399,7 +399,14 @@ export function MaintenancePage() {
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger className="w-full rounded-xl text-xs py-5">
-                      <SelectValue placeholder="Choose a Vehicle" />
+                      <SelectValue placeholder="Choose a Vehicle">
+                        {field.value && vehiclesOptions.find((v) => v.id === field.value)
+                          ? (() => {
+                              const v = vehiclesOptions.find((v) => v.id === field.value)!
+                              return `${v.name} (${v.registrationNumber})`
+                            })()
+                          : undefined}
+                      </SelectValue>
                     </SelectTrigger>
                     <SelectContent>
                       {loadingVehicles ? (

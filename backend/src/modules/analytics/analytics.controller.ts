@@ -31,3 +31,10 @@ export const getAnalyticsOverview: RequestHandler = async (req, res) => {
     await analyticsService.overview(analyticsQuerySchema.parse(req.query)),
   );
 };
+
+export const getMonthlyTrendReport: RequestHandler = async (req, res) => {
+  return successResponse(
+    res,
+    await analyticsService.monthlyTrend(analyticsQuerySchema.parse(req.query)),
+  );
+};
