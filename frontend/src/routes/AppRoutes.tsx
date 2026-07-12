@@ -10,7 +10,6 @@ import { TripsPage } from "@/pages/trips/TripsPage"
 import { MaintenancePage } from "@/pages/maintenance/MaintenancePage"
 import { SettingsPage } from "@/pages/settings/SettingsPage"
 import { FuelExpensesPage } from "@/pages/finance/FuelExpensesPage"
-import { AnalyticsPage } from "@/pages/analytics/AnalyticsPage"
 import { LoginPage } from "@/pages/auth/LoginPage"
 import { useAuthStore } from "@/store/auth.store"
 
@@ -26,7 +25,9 @@ export function AppRoutes() {
     <Routes>
       <Route
         path="/login"
-        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />}
+        element={
+          isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />
+        }
       />
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
@@ -41,7 +42,12 @@ export function AppRoutes() {
           <Route path="/analytics" element={<AnalyticsPage />} />
         </Route>
       </Route>
-      <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} />
+      <Route
+        path="*"
+        element={
+          <Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />
+        }
+      />
     </Routes>
   )
 }
