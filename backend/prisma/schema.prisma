@@ -62,6 +62,8 @@ model Profile {
   role      Role
   passwordHash     String
   refreshTokenHash String?
+  passwordResetTokenHash String?
+  passwordResetExpiresAt DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
