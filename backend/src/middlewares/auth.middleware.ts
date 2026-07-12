@@ -11,7 +11,8 @@ export function authenticate(req: Request, _res: Response, next: NextFunction) {
     return next(new ApiError(401, "UNAUTHORIZED", "Access token is required"));
   try {
     const payload = verifyAccessToken(token);
-    if (payload.type !== "access") throw new Error("invalid token type");
+    if (payload.type !== "access")
+      throw new ApiError(401, "UNAUTHORIZED", "Invalid access token");
 
     prisma.profile
       .findUnique({
