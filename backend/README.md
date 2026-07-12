@@ -84,6 +84,11 @@ Why:
 
 ### RBAC and settings
 
+- `SMTP_SECURE` should be `false` for port `587` and `true` for port `465`.
+- For Gmail, `SMTP_PASS` must be a Google App Password, not your normal account password.
+- In development, forgot-password requests return the reset token in the response so you can test without opening email.
+- List endpoints for vehicles, drivers, trips, maintenance, fuel logs, and expenses return paginated `{ items, pagination }` payloads.
+- In development, Prisma and other known backend errors keep their useful message and metadata instead of collapsing into a generic internal error.
 - `Profile.moduleAccess` stores module access as an array.
 - `role` remains for coarse identity and policy.
 - Settings includes:
