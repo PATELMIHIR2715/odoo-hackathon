@@ -35,7 +35,9 @@ Validation errors return:
 
 `field` appears only for validation errors.
 
-The response examples below show the `data` payload content for readability. The actual HTTP response always includes the envelope shown above.
+The response examples below show the `data` payload content for readability. The actual HTTP response always includes the `success` and `message` fields around that payload, as shown above.
+
+Auth payloads also include `moduleAccess`, an array of module names such as `dashboard`, `fleet`, `drivers`, `trips`, `maintenance`, `fuel_expenses`, `analytics`, and `settings`.
 
 ## Auth Routes
 
@@ -63,6 +65,7 @@ Success `201`:
       "fullName": "John Driver",
       "email": "john@example.com",
       "role": "DRIVER",
+      "moduleAccess": ["dashboard", "trips"],
       "createdAt": "2026-07-12T10:00:00.000Z",
       "updatedAt": "2026-07-12T10:00:00.000Z"
     },
@@ -93,6 +96,7 @@ Success `200`:
       "fullName": "John Driver",
       "email": "john@example.com",
       "role": "DRIVER",
+      "moduleAccess": ["dashboard", "trips"],
       "createdAt": "2026-07-12T10:00:00.000Z",
       "updatedAt": "2026-07-12T10:00:00.000Z"
     },
@@ -124,6 +128,7 @@ Success `200`:
       "fullName": "John Driver",
       "email": "john@example.com",
       "role": "DRIVER",
+      "moduleAccess": ["dashboard", "trips"],
       "createdAt": "2026-07-12T10:00:00.000Z",
       "updatedAt": "2026-07-12T10:00:00.000Z"
     },
@@ -196,6 +201,7 @@ Success `200`:
     "fullName": "John Driver",
     "email": "john@example.com",
     "role": "DRIVER",
+    "moduleAccess": ["dashboard", "trips"],
     "createdAt": "2026-07-12T10:00:00.000Z",
     "updatedAt": "2026-07-12T10:00:00.000Z"
   }
@@ -221,6 +227,7 @@ Success `200`:
     "fullName": "John Updated",
     "email": "john@example.com",
     "role": "DRIVER",
+    "moduleAccess": ["dashboard", "trips"],
     "createdAt": "2026-07-12T10:00:00.000Z",
     "updatedAt": "2026-07-12T10:00:00.000Z"
   }
@@ -245,6 +252,43 @@ Success `200`:
   "data": null
 }
 ```
+
+## Settings / RBAC
+
+### `GET /settings/rbac`
+
+Admin-only. Returns the module catalog, default role matrix, and all profiles with their current access arrays.
+
+Success `200`:
+
+```json
+{
+  "data": {
+    "availableModules": ["dashboard", "fleet", "drivers", "trips", "maintenance", "fuel_expenses", "analytics", "settings"],
+    "roleDefaults": {
+      "ADMIN": ["dashboard", "fleet", "drivers", "trips", "maintenance", "fuel_expenses", "analytics", "settings"],
+      "FLEET_MANAGER": ["dashboard", "fleet", "drivers", "maintenance", "analytics"],
+      "DRIVER": ["dashboard", "trips"],
+      "SAFETY_OFFICER": ["dashboard", "drivers", "trips"],
+      "FINANCIAL_ANALYST": ["dashboard", "fleet", "fuel_expenses", "analytics"]
+    },
+    "profiles": []
+  }
+}
+```
+
+### `PATCH /settings/rbac/:profileId`
+
+Admin-only. Body:
+
+```json
+{
+  "role": "FLEET_MANAGER",
+  "moduleAccess": ["dashboard", "fleet", "drivers", "maintenance", "analytics"]
+}
+```
+
+If `moduleAccess` is omitted, the backend applies the default module list for the selected role.
 
 ## Vehicle Routes
 

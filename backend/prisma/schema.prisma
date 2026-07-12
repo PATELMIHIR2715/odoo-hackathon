@@ -60,6 +60,7 @@ model Profile {
   fullName  String
   email     String   @unique
   role      Role
+  moduleAccess String[] @default([])
   passwordHash     String
   refreshTokenHash String?
   passwordResetTokenHash String?

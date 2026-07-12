@@ -1,7 +1,13 @@
-import { DriverStatus, Prisma, Role, TripStatus, VehicleStatus } from '@prisma/client';
-import { z } from 'zod';
-import { ApiError } from '../../utils/ApiError.js';
-import { successResponse } from '../../lib/response.js';
+import {
+  DriverStatus,
+  Prisma,
+  Role,
+  TripStatus,
+  VehicleStatus,
+} from "@prisma/client";
+import { z } from "zod";
+import { ApiError } from "../../utils/ApiError.js";
+import { successResponse } from "../../lib/response.js";
 
 export const allRoles = Object.values(Role);
 
@@ -36,7 +42,11 @@ export const tripInputSchema = z.object({
   plannedDistance: z.coerce.number().positive(),
 });
 
-export function sendJson(res: { status: (code: number) => { json: (body: unknown) => unknown } }, data: unknown, status = 200) {
+export function sendJson(
+  res: { status: (code: number) => { json: (body: unknown) => unknown } },
+  data: unknown,
+  status = 200,
+) {
   return successResponse(res as never, data, status);
 }
 
@@ -44,26 +54,46 @@ export function parseUuid(value: unknown) {
   return idSchema.parse(value);
 }
 
-export async function assertVehicleAndDriverForTrip(tx: Prisma.TransactionClient, vehicleId: string, driverId: string, cargoWeightKg: number) {
+export async function assertVehicleAndDriverForTrip(
+  tx: Prisma.TransactionClient,
+  vehicleId: string,
+  driverId: string,
+  cargoWeightKg: number,
+) {
   const [vehicle, driver] = await Promise.all([
     tx.vehicle.findUnique({ where: { id: vehicleId } }),
     tx.driver.findUnique({ where: { id: driverId } }),
   ]);
 
   if (!vehicle || !driver) {
-    throw new ApiError(404, 'RESOURCE_NOT_FOUND', 'Vehicle or driver was not found');
+    throw new ApiError(
+      404,
+      "RESOURCE_NOT_FOUND",
+      "Vehicle or driver was not found",
+    );
   }
 
   if (vehicle.status !== VehicleStatus.AVAILABLE) {
-    throw new ApiError(409, 'VEHICLE_UNAVAILABLE', 'Vehicle is not available');
+    throw new ApiError(409, "VEHICLE_UNAVAILABLE", "Vehicle is not available");
   }
 
-  if (driver.status !== DriverStatus.AVAILABLE || driver.licenseExpiryDate <= new Date()) {
-    throw new ApiError(409, 'DRIVER_UNAVAILABLE', 'Driver is unavailable or has an expired license');
+  if (
+    driver.status !== DriverStatus.AVAILABLE ||
+    driver.licenseExpiryDate <= new Date()
+  ) {
+    throw new ApiError(
+      409,
+      "DRIVER_UNAVAILABLE",
+      "Driver is unavailable or has an expired license",
+    );
   }
 
   if (cargoWeightKg > vehicle.maxLoadCapacityKg) {
-    throw new ApiError(400, 'CAPACITY_EXCEEDED', 'Cargo weight exceeds vehicle capacity');
+    throw new ApiError(
+      400,
+      "CAPACITY_EXCEEDED",
+      "Cargo weight exceeds vehicle capacity",
+    );
   }
 
   return { vehicle, driver };

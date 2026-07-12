@@ -24,7 +24,8 @@
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "test:smoke": "tsx --test tests/smoke.test.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

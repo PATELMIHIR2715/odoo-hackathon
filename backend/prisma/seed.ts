@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import bcrypt from 'bcrypt';
 import { PrismaClient, Role } from '@prisma/client';
+import { ALL_APP_MODULES, defaultModulesForRole } from '../src/constants/modules.js';
 
 const prisma = new PrismaClient();
 
@@ -17,8 +18,8 @@ async function main() {
   const passwordHash = await bcrypt.hash(password, 12);
   await prisma.profile.upsert({
     where: { email },
-    update: { fullName, role: Role.ADMIN, passwordHash, refreshTokenHash: null },
-    create: { fullName, email, role: Role.ADMIN, passwordHash },
+    update: { fullName, role: Role.ADMIN, moduleAccess: ALL_APP_MODULES, passwordHash, refreshTokenHash: null },
+    create: { fullName, email, role: Role.ADMIN, moduleAccess: defaultModulesForRole(Role.ADMIN), passwordHash },
   });
   console.log(`Admin profile is ready for ${email}.`);
 }

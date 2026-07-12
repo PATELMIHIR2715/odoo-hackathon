@@ -7,9 +7,17 @@ This document is the source of context for future contributors and coding agents
 - Stack: Express 5, TypeScript, Prisma, PostgreSQL, Zod, bcrypt, and `jsonwebtoken`.
 - PostgreSQL may be hosted by Supabase, but **Supabase Auth is not used**. The `@supabase/supabase-js` package/config is legacy scaffolding and is not part of the active request path.
 - Keep the existing source layout: `config`, `constants`, `lib`, `middlewares`, `modules`, `types`, and `utils`. Do not replace it with the folder layout from the original planning document.
-- The current feature routes are split across feature files inside `src/modules/operations/` and are re-exported through `src/modules/operations/operations.routes.ts`. If splitting it further later, retain the public URL and authorization contracts below.
+- The current feature routes are organized into top-level module folders under `src/modules/` such as `dashboard`, `vehicle`, `driver`, `trip`, `maintenance`, `finance`, and `analytics`.
+- `src/modules/shared/operations.shared.ts` remains as a small shared helper for cross-module trip/vehicle validation.
+- New module folders are being introduced for settings/RBAC and the access-sensitive dashboard/analytics surfaces so the structure can evolve toward the domain-by-domain layout in the reference screenshot.
 - The application now boots from `src/index.ts` instead of separate `app.ts` and `server.ts` files.
 - The frontend-facing route contract is maintained in `docs/route-doc.md`; update it whenever request or response shapes change.
+- The Figma analysis and RBAC direction are documented in `docs/FIGMA_ANALYSIS.md`.
+- The mandatory backend architecture rules are documented in `docs/ARCHITECTURE_RULES.md`.
+- The active access-control model stores module access on `Profile.moduleAccess` as a string array; role still exists for identity and coarse policy.
+- Domain features must live in their own top-level module folders, such as `src/modules/vehicle`, `src/modules/driver`, `src/modules/trip`, `src/modules/maintenance`, `src/modules/finance`, `src/modules/analytics`, and `src/modules/dashboard`. Do not group them under a shared `operations` feature folder.
+- The backend response envelope is standardized through `src/lib/response.ts`. Success responses use `{ success: true, message, data }`; shared errors use the standard `{ error, code? , field? }` envelope.
+- New modules must be created with `routes`, `controller`, `service`, and `validation` files. Route files should stay thin and only wire middleware plus controller handlers.
 
 ## Delivery phases
 
@@ -18,7 +26,7 @@ This document is the source of context for future contributors and coding agents
 | 1 | Project foundation, Prisma schema, global Express middleware | Complete |
 | 2 | Custom JWT access/refresh authentication, password lifecycle, and controlled admin bootstrap | Complete |
 | 3 | Fleet resources and transactional trip/maintenance workflows | Complete |
-| 4 | API smoke tests, route-module split, and frontend integration contract | In progress - route split and shared response helpers started |
+| 4 | API smoke tests, module-wise route/controller/service/validation split, and frontend integration contract | In progress |
 | 5 | Optional reports/export, seed demo data, and deployment hardening | Pending |
 
 When a phase changes state, update this table and the relevant sections below in the same change.
@@ -28,9 +36,13 @@ When a phase changes state, update this table and the relevant sections below in
 - Full application authentication API: registration, login, refresh, logout, current profile read/update, change password, forgot password, and reset password.
 - Password-reset tokens are random, hash-only in the database, single-use, and expire after 15 minutes.
 - New migration: `20260712100000_password_reset`.
-- Operations routes were split into feature modules for vehicles, drivers, trips, maintenance, and finance while keeping the existing `/api/v1` URLs unchanged.
+- New migration: `20260712140000_module_access`.
+- Routes now live in domain folders such as `src/modules/vehicle`, `src/modules/driver`, `src/modules/trip`, `src/modules/maintenance`, `src/modules/finance`, `src/modules/analytics`, and `src/modules/dashboard`.
+- Those domain folders follow the required layered structure with route, controller, service, and validation files.
 - Auth routes now use rate limiting on registration, login, refresh, forgot-password, and reset-password endpoints.
 - All success responses now go through a shared helper and all errors use the shared error envelope.
+- Smoke tests now cover health, not-found, and validation-error envelopes using the exported app.
+- RBAC now uses module access arrays, route guards, and a settings RBAC module.
 
 ## Authentication
 
@@ -100,7 +112,7 @@ All business endpoints are prefixed with `/api/v1` and require a valid access to
 | Dashboard | `/dashboard/kpis` | Any authenticated role |
 | Reports | `/reports/fuel-efficiency`, `/reports/fleet-utilization`, `/reports/operational-cost` | `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER` |
 
-Responses use `{ "data": ... }` for success and `{ "error": { "code", "message" } }` for failures. Zod validation failures additionally include `details`.
+Responses use the shared response helper and error handler. Success payloads are standardized as `{ success: true, message, data }`, and failures use the shared error envelope from `src/lib/response.ts`.
 
 The frontend-ready request/response contract is maintained in [route-doc.md](route-doc.md). Update it whenever a route, authorization rule, input, output, or enum changes.
 
