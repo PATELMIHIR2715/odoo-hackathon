@@ -7,6 +7,7 @@ import {
   getAnalyticsOverview,
   getFleetUtilizationReport,
   getFuelEfficiencyReport,
+  getMonthlyTrendReport,
   getOperationalCostReport,
 } from "./analytics.controller.js";
 
@@ -18,6 +19,12 @@ analyticsRouter.get(
   "/overview",
   allowRoles(Role.ADMIN, Role.FINANCIAL_ANALYST, Role.FLEET_MANAGER),
   asyncHandler(getAnalyticsOverview),
+);
+
+analyticsRouter.get(
+  "/reports/monthly-trend",
+  allowRoles(Role.ADMIN, Role.FINANCIAL_ANALYST, Role.FLEET_MANAGER),
+  asyncHandler(getMonthlyTrendReport),
 );
 
 analyticsRouter.get(
