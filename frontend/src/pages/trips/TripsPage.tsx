@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -186,7 +186,7 @@ export function TripsPage() {
     : 0
 
   // Fetch paginated trips list
-  const fetchTrips = async () => {
+  const fetchTrips = useCallback(async () => {
     setLoading(true)
     try {
       const response = await getTripsService({ page: pageFilter, pageSize })
@@ -201,10 +201,10 @@ export function TripsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [pageFilter])
 
   // Load available vehicles and drivers for the dropdowns
-  const fetchAvailableEntities = async () => {
+  const fetchAvailableEntities = useCallback(async () => {
     setLoadingOptions(true)
     try {
       const vehiclesRes = await getVehiclesService({ status: "AVAILABLE", pageSize: 100 })
@@ -224,18 +224,18 @@ export function TripsPage() {
     } finally {
       setLoadingOptions(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
-    fetchTrips()
-  }, [pageFilter])
+    void fetchTrips()
+  }, [fetchTrips])
 
   // Trigger loading options only when Create modal opens
   useEffect(() => {
     if (isCreateOpen) {
-      fetchAvailableEntities()
+      void fetchAvailableEntities()
     }
-  }, [isCreateOpen])
+  }, [fetchAvailableEntities, isCreateOpen])
 
   // Page selection
   const handlePageChange = (newPage: number) => {

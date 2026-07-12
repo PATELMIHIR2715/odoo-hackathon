@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -114,7 +114,7 @@ export function MaintenancePage() {
   })
 
   // Fetch paginated maintenance logs
-  const fetchLogs = async () => {
+  const fetchLogs = useCallback(async () => {
     setLoading(true)
     try {
       const response = await getMaintenancesService({ page: pageFilter, pageSize })
@@ -129,10 +129,10 @@ export function MaintenancePage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [pageFilter])
 
   // Load vehicles excluding retired ones for log options
-  const fetchVehiclesOptions = async () => {
+  const fetchVehiclesOptions = useCallback(async () => {
     setLoadingVehicles(true)
     try {
       const response = await getVehiclesService({ pageSize: 100 })
@@ -147,17 +147,17 @@ export function MaintenancePage() {
     } finally {
       setLoadingVehicles(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
-    fetchLogs()
-  }, [pageFilter])
+    void fetchLogs()
+  }, [fetchLogs])
 
   useEffect(() => {
     if (isLogOpen) {
-      fetchVehiclesOptions()
+      void fetchVehiclesOptions()
     }
-  }, [isLogOpen])
+  }, [fetchVehiclesOptions, isLogOpen])
 
   // Page selection
   const handlePageChange = (newPage: number) => {
