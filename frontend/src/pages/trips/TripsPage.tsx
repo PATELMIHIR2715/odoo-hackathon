@@ -148,7 +148,6 @@ export function TripsPage() {
     register: registerCreate,
     handleSubmit: handleSubmitCreate,
     control: controlCreate,
-    watch: watchCreate,
     reset: resetCreate,
     formState: { errors: errorsCreate },
   } = useForm<CreateTripFormValues>({

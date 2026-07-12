@@ -90,7 +90,6 @@ function DashboardMetricCard({
   value,
   accent,
   icon: Icon,
-  className,
 }: {
   title: string
   value: string
