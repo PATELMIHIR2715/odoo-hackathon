@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ComponentType } from "react"
-import { BarChart3, Building2, ChevronRight, Loader2, Search, ShieldCheck, Truck, Users } from "lucide-react"
+import { BarChart3, Building2, ChevronRight, Loader2, Search, ShieldCheck, Truck, Users, X } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -73,23 +73,25 @@ function DashboardMetricCard({
   value,
   accent,
   icon: Icon,
+  className,
 }: {
   title: string
   value: string
   accent: string
   icon: ComponentType<{ className?: string }>
+  className?: string
 }) {
   return (
-    <div className="rounded-2xl border border-border/80 bg-card p-4 shadow-sm">
+    <div className={cn("min-h-36 rounded-2xl border border-border/80 bg-card p-4 shadow-sm", className)}>
       <div className={cn("mb-4 h-1.5 w-16 rounded-full", accent)} />
-      <div className="flex items-start justify-between gap-4">
-        <div>
-          <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+      <div className="flex min-w-0 items-start justify-between gap-3">
+        <div className="min-w-0 flex-1 pr-1">
+          <p className="max-w-[12ch] text-[11px] font-medium uppercase leading-4 tracking-[0.2em] text-muted-foreground">
             {title}
           </p>
           <p className="mt-2 text-3xl font-semibold tracking-tight">{value}</p>
         </div>
-        <div className="rounded-xl border border-border/70 bg-muted/40 p-2 text-muted-foreground">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border/70 bg-muted/40 text-muted-foreground">
           <Icon className="size-[18px]" />
         </div>
       </div>
@@ -186,6 +188,50 @@ export function DashboardPage() {
   const maxVehicleCount = Math.max(...statusBreakdown.map((item) => item.count), 1)
 
   const kpis = overview?.kpis
+  const metricCards = [
+    {
+      title: "Active Vehicles",
+      value: isLoading ? "…" : numberFormatter.format(kpis?.activeVehicles ?? 0),
+      accent: "bg-sky-500",
+      icon: Truck,
+    },
+    {
+      title: "Available Vehicles",
+      value: isLoading ? "…" : numberFormatter.format(kpis?.availableVehicles ?? 0),
+      accent: "bg-emerald-500",
+      icon: ShieldCheck,
+    },
+    {
+      title: "Vehicles in Maintenance",
+      value: isLoading ? "…" : numberFormatter.format(kpis?.inMaintenanceVehicles ?? 0),
+      accent: "bg-amber-500",
+      icon: Building2,
+    },
+    {
+      title: "Active Trips",
+      value: isLoading ? "…" : numberFormatter.format(kpis?.activeTrips ?? 0),
+      accent: "bg-sky-500",
+      icon: BarChart3,
+    },
+    {
+      title: "Pending Trips",
+      value: isLoading ? "…" : numberFormatter.format(kpis?.pendingTrips ?? 0),
+      accent: "bg-amber-500",
+      icon: ChevronRight,
+    },
+    {
+      title: "Drivers on Duty",
+      value: isLoading ? "…" : numberFormatter.format(kpis?.driversOnDuty ?? 0),
+      accent: "bg-sky-500",
+      icon: Users,
+    },
+    {
+      title: "Fleet Utilization",
+      value: isLoading ? "…" : `${kpis?.fleetUtilizationPercent ?? 0}%`,
+      accent: "bg-emerald-500",
+      icon: BarChart3,
+    },
+  ] as const
 
   return (
     <div className="space-y-6">
@@ -225,44 +271,82 @@ export function DashboardPage() {
           Filters
         </div>
         <div className="grid gap-3 md:grid-cols-3">
-          <Select
-            value={vehicleType || undefined}
-            onValueChange={(value) => setVehicleType(value as VehicleType)}
-          >
-            <SelectTrigger className="h-10 w-full rounded-xl text-sm">
-              <SelectValue placeholder="Vehicle Type: All" />
-            </SelectTrigger>
-            <SelectContent>
-              {vehicleTypeOptions.map((option) => (
-                <SelectItem key={option.label} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="relative">
+            <Select
+              value={vehicleType || "ALL"}
+              onValueChange={(value) => setVehicleType(value === "ALL" ? "" : (value as VehicleType))}
+            >
+              <SelectTrigger className="h-10 w-full rounded-xl pr-10 text-sm">
+                <SelectValue placeholder="Vehicle Type: All" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">All</SelectItem>
+                {vehicleTypeOptions.map((option) => (
+                  <SelectItem key={option.label} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {vehicleType ? (
+              <button
+                type="button"
+                aria-label="Clear vehicle type"
+                onClick={() => setVehicleType("")}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                <X className="size-3.5" />
+              </button>
+            ) : null}
+          </div>
 
-          <Select
-            value={status || undefined}
-            onValueChange={(value) => setStatus(value as VehicleStatus)}
-          >
-            <SelectTrigger className="h-10 w-full rounded-xl text-sm">
-              <SelectValue placeholder="Status: All" />
-            </SelectTrigger>
-            <SelectContent>
-              {vehicleStatusOptions.map((option) => (
-                <SelectItem key={option.label} value={option.value}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <div className="relative">
+            <Select
+              value={status || "ALL"}
+              onValueChange={(value) => setStatus(value === "ALL" ? "" : (value as VehicleStatus))}
+            >
+              <SelectTrigger className="h-10 w-full rounded-xl pr-10 text-sm">
+                <SelectValue placeholder="Status: All" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ALL">All</SelectItem>
+                {vehicleStatusOptions.map((option) => (
+                  <SelectItem key={option.label} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {status ? (
+              <button
+                type="button"
+                aria-label="Clear status"
+                onClick={() => setStatus("")}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                <X className="size-3.5" />
+              </button>
+            ) : null}
+          </div>
 
-          <Input
-            value={region}
-            onChange={(event) => setRegion(event.target.value)}
-            placeholder="Region: All"
-            className="h-10 rounded-xl text-sm"
-          />
+          <div className="relative">
+            <Input
+              value={region}
+              onChange={(event) => setRegion(event.target.value)}
+              placeholder="Region: All"
+              className="h-10 rounded-xl pr-10 text-sm"
+            />
+            {region ? (
+              <button
+                type="button"
+                aria-label="Clear region"
+                onClick={() => setRegion("")}
+                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+              >
+                <X className="size-3.5" />
+              </button>
+            ) : null}
+          </div>
         </div>
       </div>
 
@@ -273,49 +357,21 @@ export function DashboardPage() {
         </div>
       ) : null}
 
-      <div className="grid gap-4 xl:grid-cols-7">
-        <DashboardMetricCard
-          title="Active Vehicles"
-          value={isLoading ? "…" : numberFormatter.format(kpis?.activeVehicles ?? 0)}
-          accent="bg-sky-500"
-          icon={Truck}
-        />
-        <DashboardMetricCard
-          title="Available Vehicles"
-          value={isLoading ? "…" : numberFormatter.format(kpis?.availableVehicles ?? 0)}
-          accent="bg-emerald-500"
-          icon={ShieldCheck}
-        />
-        <DashboardMetricCard
-          title="Vehicles in Maintenance"
-          value={isLoading ? "…" : numberFormatter.format(kpis?.inMaintenanceVehicles ?? 0)}
-          accent="bg-amber-500"
-          icon={Building2}
-        />
-        <DashboardMetricCard
-          title="Active Trips"
-          value={isLoading ? "…" : numberFormatter.format(kpis?.activeTrips ?? 0)}
-          accent="bg-sky-500"
-          icon={BarChart3}
-        />
-        <DashboardMetricCard
-          title="Pending Trips"
-          value={isLoading ? "…" : numberFormatter.format(kpis?.pendingTrips ?? 0)}
-          accent="bg-amber-500"
-          icon={ChevronRight}
-        />
-        <DashboardMetricCard
-          title="Drivers on Duty"
-          value={isLoading ? "…" : numberFormatter.format(kpis?.driversOnDuty ?? 0)}
-          accent="bg-sky-500"
-          icon={Users}
-        />
-        <DashboardMetricCard
-          title="Fleet Utilization"
-          value={isLoading ? "…" : `${kpis?.fleetUtilizationPercent ?? 0}%`}
-          accent="bg-emerald-500"
-          icon={BarChart3}
-        />
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+        {metricCards.map((card, index) => {
+          const isLastCard = index === metricCards.length - 1
+          const hasOddRemainder = metricCards.length % 4 === 1
+          return (
+            <DashboardMetricCard
+              key={card.title}
+              title={card.title}
+              value={card.value}
+              accent={card.accent}
+              icon={card.icon}
+              className={isLastCard && hasOddRemainder ? "xl:col-span-full 2xl:col-span-full" : undefined}
+            />
+          )
+        })}
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_minmax(320px,1fr)]">
