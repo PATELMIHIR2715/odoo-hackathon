@@ -16,6 +16,7 @@ This document is the source of context for future contributors and coding agents
 - The mandatory backend architecture rules are documented in `docs/ARCHITECTURE_RULES.md`.
 - The active access-control model stores module access on `Profile.moduleAccess` as a string array; role still exists for identity and coarse policy.
 - Domain features must live in their own top-level module folders, such as `src/modules/vehicle`, `src/modules/driver`, `src/modules/trip`, `src/modules/maintenance`, `src/modules/finance`, `src/modules/analytics`, and `src/modules/dashboard`. Do not group them under a shared `operations` feature folder.
+- The settings area now has two admin-only surfaces: organization details (`/settings/org`) and RBAC (`/settings/rbac`).
 - The backend response envelope is standardized through `src/lib/response.ts`. Success responses use `{ success: true, message, data }`; shared errors use the standard `{ error, code? , field? }` envelope.
 - New modules must be created with `routes`, `controller`, `service`, and `validation` files. Route files should stay thin and only wire middleware plus controller handlers.
 

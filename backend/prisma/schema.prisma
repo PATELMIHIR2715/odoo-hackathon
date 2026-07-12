@@ -179,3 +179,19 @@ model Expense {
   @@index([vehicleId])
   @@map("expenses")
 }
+
+model OrganizationSettings {
+  id            Int      @id @default(1)
+  orgName       String
+  depotName     String
+  currency      String   @default("LKR")
+  distanceUnit  String   @default("KM")
+  timezone      String   @default("Asia/Colombo")
+  contactEmail  String?
+  contactPhone  String?
+  address       String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("organization_settings")
+}

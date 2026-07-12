@@ -255,6 +255,55 @@ Success `200`:
 
 ## Settings / RBAC
 
+### `GET /settings/org`
+
+Admin-only. Returns the singleton organization settings record.
+
+Success `200`:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": {
+    "id": 1,
+    "orgName": "TransitOps",
+    "depotName": "Main Depot",
+    "currency": "LKR",
+    "distanceUnit": "KM",
+    "timezone": "Asia/Colombo",
+    "contactEmail": null,
+    "contactPhone": null,
+    "address": null,
+    "createdAt": "2026-07-12T10:00:00.000Z",
+    "updatedAt": "2026-07-12T10:00:00.000Z"
+  }
+}
+```
+
+### `PATCH /settings/org`
+
+Admin-only.
+
+Body:
+
+```json
+{
+  "orgName": "TransitOps Pvt Ltd",
+  "depotName": "Colombo Central Depot",
+  "currency": "LKR",
+  "distanceUnit": "KM",
+  "timezone": "Asia/Colombo",
+  "contactEmail": "ops@example.com",
+  "contactPhone": "0112345678",
+  "address": "Colombo, Sri Lanka"
+}
+```
+
+You may send any subset of these fields.
+
+Success `200`: same shape as `GET /settings/org`.
+
 ### `GET /settings/rbac`
 
 Admin-only. Returns the module catalog, default role matrix, and all profiles with their current access arrays.
