@@ -47,6 +47,7 @@ When a phase changes state, update this table and the relevant sections below in
 - List endpoints for vehicles, drivers, trips, maintenance, fuel logs, and expenses now return paginated `{ items, pagination }` payloads.
 - Vehicle, driver, and trip lists support search and filters that match the dispatcher/fleet screens.
 - Finance adds a `/finance/summary` endpoint for total fuel, expense, maintenance, and operational cost values.
+- Analytics adds a `/analytics/overview` endpoint for fuel efficiency, fleet utilization, operational cost, monthly trend, and top-costly-vehicle summaries.
 - Smoke tests now cover health, not-found, and validation-error envelopes using the exported app.
 - RBAC now uses module access arrays, route guards, and a settings RBAC module.
 
