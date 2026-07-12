@@ -1,0 +1,9 @@
+import { useAuthStore } from "@/store/auth.store"
+
+export function useAuth() {
+  return useAuthStore((state) => ({
+    user: state.user,
+    isAuthenticated: state.isAuthenticated,
+    isLoading: state.isLoading,
+  }))
+}
