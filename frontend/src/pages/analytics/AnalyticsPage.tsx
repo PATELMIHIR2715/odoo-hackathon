@@ -31,15 +31,25 @@ type CustomTooltipProps = {
 const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
-      <div className="rounded-xl border border-border bg-card/95 p-3 shadow-md backdrop-blur-sm text-xs space-y-1.5 text-card-foreground">
-        <p className="font-semibold text-foreground border-b border-border/80 pb-1 mb-1">{label}</p>
+      <div className="space-y-1.5 rounded-xl border border-border bg-card/95 p-3 text-xs text-card-foreground shadow-md backdrop-blur-sm">
+        <p className="mb-1 border-b border-border/80 pb-1 font-semibold text-foreground">
+          {label}
+        </p>
         {payload.map((p) => (
-          <div key={p.name} className="flex items-center justify-between gap-4 font-medium">
+          <div
+            key={p.name}
+            className="flex items-center justify-between gap-4 font-medium"
+          >
             <span className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full" style={{ backgroundColor: p.fill }} />
+              <span
+                className="h-2 w-2 rounded-full"
+                style={{ backgroundColor: p.fill }}
+              />
               <span className="text-muted-foreground">{p.name}:</span>
             </span>
-            <span className="font-mono font-bold text-foreground">₹{p.value.toLocaleString("en-IN")}</span>
+            <span className="font-mono font-bold text-foreground">
+              ₹{p.value.toLocaleString("en-IN")}
+            </span>
           </div>
         ))}
       </div>
@@ -83,7 +93,7 @@ export function AnalyticsPage() {
 
   if (!data) {
     return (
-      <div className="text-center py-10 text-muted-foreground">
+      <div className="py-10 text-center text-muted-foreground">
         No analytics data available.
       </div>
     )
@@ -158,63 +168,73 @@ export function AnalyticsPage() {
     <div className="space-y-6">
       {/* Top Header Block */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight">Analytics Dashboard</h1>
+        <h1 className="text-2xl font-bold tracking-tight">
+          Analytics Dashboard
+        </h1>
         <p className="text-sm text-muted-foreground">
-          Financial cost analyses, fleet utilization parameters, and refueling metrics.
+          Financial cost analyses, fleet utilization parameters, and refueling
+          metrics.
         </p>
       </div>
 
       {/* Metrics Cards Grid Layout */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Card 1: Fuel Efficiency */}
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm border-l-4 border-l-sky-500">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+        <div className="rounded-2xl border border-l-4 border-border border-l-sky-500 bg-card p-5 shadow-sm">
+          <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
             Fuel Efficiency
           </p>
           <p className="mt-2 text-2xl font-bold text-foreground">
-            {avgFuelEfficiency} <span className="text-sm font-medium">km/l</span>
+            {avgFuelEfficiency}{" "}
+            <span className="text-sm font-medium">km/l</span>
           </p>
         </div>
 
         {/* Card 2: Fleet Utilization */}
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm border-l-4 border-l-emerald-500">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+        <div className="rounded-2xl border border-l-4 border-border border-l-emerald-500 bg-card p-5 shadow-sm">
+          <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
             Fleet Utilization
           </p>
-          <p className="mt-2 text-2xl font-bold text-foreground">{fleetUtilizationPercent}</p>
+          <p className="mt-2 text-2xl font-bold text-foreground">
+            {fleetUtilizationPercent}
+          </p>
         </div>
 
         {/* Card 3: Operational Cost */}
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm border-l-4 border-l-amber-500">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+        <div className="rounded-2xl border border-l-4 border-border border-l-amber-500 bg-card p-5 shadow-sm">
+          <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
             Operational Cost
           </p>
-          <p className="mt-2 text-2xl font-bold text-foreground">₹{totalCostVal}</p>
+          <p className="mt-2 text-2xl font-bold text-foreground">
+            ₹{totalCostVal}
+          </p>
         </div>
 
         {/* Card 4: Vehicle ROI */}
-        <div className="rounded-2xl border border-border bg-card p-5 shadow-sm border-l-4 border-l-emerald-600">
-          <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+        <div className="rounded-2xl border border-l-4 border-border border-l-emerald-600 bg-card p-5 shadow-sm">
+          <p className="text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
             Vehicle ROI
           </p>
-          <p className="mt-2 text-2xl font-bold text-foreground">{roiPercent}</p>
+          <p className="mt-2 text-2xl font-bold text-foreground">
+            {roiPercent}
+          </p>
         </div>
       </div>
 
       {/* Under-cards formula info */}
-      <p className="text-[10px] text-muted-foreground italic font-medium -mt-2">
+      <p className="-mt-2 text-[10px] font-medium text-muted-foreground italic">
         ROI = (Revenue - (Maintenance + Fuel)) / Acquisition Cost
       </p>
 
       {/* Main Graphs & Costliest vehicles details */}
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Monthly Trend Graph Box */}
-        <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm lg:col-span-2 space-y-4">
+        <div className="space-y-4 rounded-2xl border border-border/80 bg-card p-6 shadow-sm lg:col-span-2">
           <div>
-            <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <h2 className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
               Monthly Cost Trends
             </h2>
-            <p className="text-[11px] text-muted-foreground mt-0.5">
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
               Refueling fuel costs, workshops, and misc toll expenses.
             </p>
           </div>
@@ -225,41 +245,81 @@ export function AnalyticsPage() {
                 data={chartData}
                 margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
               >
-                <CartesianGrid strokeDasharray="3 3" vertical={false} className="stroke-border/50" />
-                <XAxis dataKey="name" stroke="#888888" fontSize={10} tickLine={false} axisLine={false} />
-                <YAxis stroke="#888888" fontSize={10} tickLine={false} axisLine={false} />
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={false}
+                  className="stroke-border/50"
+                />
+                <XAxis
+                  dataKey="name"
+                  stroke="#888888"
+                  fontSize={10}
+                  tickLine={false}
+                  axisLine={false}
+                />
+                <YAxis
+                  stroke="#888888"
+                  fontSize={10}
+                  tickLine={false}
+                  axisLine={false}
+                />
                 <Tooltip
                   content={<CustomTooltip />}
                   cursor={{ fill: "rgba(100, 100, 100, 0.05)" }}
                 />
-                <Legend iconSize={8} iconType="circle" wrapperStyle={{ fontSize: "10px", paddingTop: "10px" }} />
-                <Bar name="Fuel Cost" dataKey="fuelCost" stackId="costs" fill="#3b82f6" radius={[0, 0, 0, 0]} />
-                <Bar name="Maintenance" dataKey="maintenanceCost" stackId="costs" fill="#f59e0b" radius={[0, 0, 0, 0]} />
-                <Bar name="Tolls & Exp" dataKey="expenseCost" stackId="costs" fill="#f43f5e" radius={[4, 4, 0, 0]} />
+                <Legend
+                  iconSize={8}
+                  iconType="circle"
+                  wrapperStyle={{ fontSize: "10px", paddingTop: "10px" }}
+                />
+                <Bar
+                  name="Fuel Cost"
+                  dataKey="fuelCost"
+                  stackId="costs"
+                  fill="#3b82f6"
+                  radius={[0, 0, 0, 0]}
+                />
+                <Bar
+                  name="Maintenance"
+                  dataKey="maintenanceCost"
+                  stackId="costs"
+                  fill="#f59e0b"
+                  radius={[0, 0, 0, 0]}
+                />
+                <Bar
+                  name="Tolls & Exp"
+                  dataKey="expenseCost"
+                  stackId="costs"
+                  fill="#f43f5e"
+                  radius={[4, 4, 0, 0]}
+                />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
         {/* Costliest vehicles indicators list */}
-        <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-sm space-y-4">
+        <div className="space-y-4 rounded-2xl border border-border/80 bg-card p-6 shadow-sm">
           <div>
-            <h2 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <h2 className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
               Top Costliest Vehicles
             </h2>
-            <p className="text-[11px] text-muted-foreground mt-0.5">
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
               Accumulated operational expense distribution per vehicle unit.
             </p>
           </div>
 
           <div className="space-y-4 pt-2">
             {data.topCostlyVehicles.length === 0 ? (
-              <p className="text-xs text-muted-foreground text-center py-10">
+              <p className="py-10 text-center text-xs text-muted-foreground">
                 No costly vehicle statistics logged.
               </p>
             ) : (
               data.topCostlyVehicles.map((vehicle, index) => {
-                const widthPercent = Math.max(10, Math.min(100, (vehicle.totalCost / maxVehicleCost) * 100))
+                const widthPercent = Math.max(
+                  10,
+                  Math.min(100, (vehicle.totalCost / maxVehicleCost) * 100)
+                )
                 const barColor = barColors[index % barColors.length]
 
                 return (
@@ -267,7 +327,7 @@ export function AnalyticsPage() {
                     <div className="flex items-center justify-between text-xs font-medium">
                       <span className="text-foreground">
                         {vehicle.name || "Unknown"}
-                        <span className="text-[10px] text-muted-foreground font-mono ml-1.5">
+                        <span className="ml-1.5 font-mono text-[10px] text-muted-foreground">
                           ({vehicle.registrationNumber})
                         </span>
                       </span>
@@ -277,7 +337,7 @@ export function AnalyticsPage() {
                     </div>
 
                     {/* Progress track */}
-                    <div className="h-3 w-full rounded-full bg-muted/30 overflow-hidden border border-border/20">
+                    <div className="h-3 w-full overflow-hidden rounded-full border border-border/20 bg-muted/30">
                       <div
                         className={`h-full rounded-full transition-all duration-500 ${barColor}`}
                         style={{ width: `${widthPercent}%` }}

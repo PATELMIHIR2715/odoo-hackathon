@@ -9,6 +9,11 @@ export const vehicleStatusSchema = z.nativeEnum(VehicleStatus);
 export const vehicleTypeSchema = z.nativeEnum(VehicleType);
 
 export const listVehiclesQuerySchema = z.object({
+  search: z
+    .string()
+    .trim()
+    .min(1)
+    .optional(),
   status: z.preprocess(
     (value) => (typeof value === "string" ? value.trim().toUpperCase() : value),
     z.nativeEnum(VehicleStatus),
