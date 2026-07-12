@@ -15,7 +15,10 @@ export const refresh: RequestHandler = async (req, res) => {
   if (!token) throw new ApiError(401, 'UNAUTHORIZED', 'Refresh token is required');
   return successResponse(res, await authService.refresh(token));
 };
-export const logout: RequestHandler = async (req, res) => successResponse(res, await authService.logout(req.user!.id));
+export const logout: RequestHandler = async (req, res) => {
+  await authService.logout(req.user!.id);
+  return successResponse(res, null);
+};
 export const me: RequestHandler = async (req, res) => successResponse(res, await authService.me(req.user!.id));
 export const updateProfile: RequestHandler = async (req, res) => {
   const { fullName } = updateProfileSchema.parse(req.body);

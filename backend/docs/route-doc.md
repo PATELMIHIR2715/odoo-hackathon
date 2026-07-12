@@ -5,22 +5,37 @@ Base URL: `http://localhost:4000/api/v1`
 All success responses use:
 
 ```json
-{ "data": ... }
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": ...
+}
 ```
 
 All errors use:
 
 ```json
 {
-  "error": {
-    "code": "ERROR_CODE",
-    "message": "Readable message",
-    "details": {}
-  }
+  "success": false,
+  "error": "Readable message",
+  "code": "ERROR_CODE"
 }
 ```
 
-`details` appears only for validation errors.
+Validation errors return:
+
+```json
+{
+  "success": false,
+  "error": "Validation message",
+  "field": ["body", "fieldName"],
+  "message": "Readable message"
+}
+```
+
+`field` appears only for validation errors.
+
+The response examples below show the `data` payload content for readability. The actual HTTP response always includes the envelope shown above.
 
 ## Auth Routes
 
