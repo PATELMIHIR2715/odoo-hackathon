@@ -3,6 +3,7 @@ import { prisma } from "../../config/prisma.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { parseUuid } from "../shared/operations.shared.js";
 import { vehicleInputSchema, vehicleStatusSchema } from "./vehicle.validation.js";
+import { randomUUID } from "node:crypto";
 
 export const vehiclesService = {
   async listVehicles(query: { status?: string; type?: string; region?: string }) {
@@ -34,7 +35,15 @@ export const vehiclesService = {
   },
 
   async createVehicle(input: unknown) {
-    return prisma.vehicle.create({ data: vehicleInputSchema.parse(input) });
+    const parsed = vehicleInputSchema.parse(input);
+    return prisma.vehicle.create({
+      data: {
+        ...parsed,
+        vehicleCode: parsed.vehicleCode ?? `VEH-${randomUUID().slice(0, 8)}`,
+        manufacturer: parsed.manufacturer ?? "Unknown",
+        model: parsed.model ?? parsed.name,
+      },
+    });
   },
 
   async updateVehicle(id: string, input: unknown) {

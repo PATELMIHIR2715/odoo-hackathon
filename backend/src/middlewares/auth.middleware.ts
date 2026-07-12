@@ -25,11 +25,14 @@ export function authenticate(req: Request, _res: Response, next: NextFunction) {
             "UNAUTHORIZED",
             "Access token is invalid or expired",
           );
+        const moduleAccess = Array.isArray(profile.moduleAccess)
+          ? profile.moduleAccess
+          : [];
         req.user = {
           id: profile.id,
           role: profile.role,
-          moduleAccess: profile.moduleAccess.length
-            ? (profile.moduleAccess as AppModule[])
+          moduleAccess: moduleAccess.length
+            ? (moduleAccess as AppModule[])
             : defaultModulesForRole(profile.role),
         };
         next();
