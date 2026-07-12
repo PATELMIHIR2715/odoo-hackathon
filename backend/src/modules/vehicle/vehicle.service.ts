@@ -11,16 +11,30 @@ import { randomUUID } from "node:crypto";
 
 export const vehiclesService = {
   async listVehicles(query: {
+    search?: string;
     status?: VehicleStatus;
     type?: VehicleType;
     region?: string;
     page: number;
     pageSize: number;
   }) {
+    const search = query.search?.trim();
     const where = {
       ...(query.status ? { status: vehicleStatusSchema.parse(query.status) } : {}),
       ...(query.type ? { type: vehicleTypeSchema.parse(query.type) } : {}),
-      ...(query.region ? { region: String(query.region) } : {}),
+      ...(query.region ? { region: String(query.region).trim() } : {}),
+      ...(search
+        ? {
+            OR: [
+              { registrationNumber: { contains: search, mode: "insensitive" as const } },
+              { name: { contains: search, mode: "insensitive" as const } },
+              { vehicleCode: { contains: search, mode: "insensitive" as const } },
+              { manufacturer: { contains: search, mode: "insensitive" as const } },
+              { model: { contains: search, mode: "insensitive" as const } },
+              { region: { contains: search, mode: "insensitive" as const } },
+            ],
+          }
+        : {}),
     };
 
     const [total, items] = await Promise.all([

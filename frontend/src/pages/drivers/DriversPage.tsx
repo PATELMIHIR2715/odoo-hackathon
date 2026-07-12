@@ -368,10 +368,13 @@ export function DriversPage() {
   }
 
   const getSafetyBadgeStyle = (score: number) => {
-    if (score >= 90) return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-md text-[11px] font-semibold"
-    if (score >= 80) return "bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 px-2 py-0.5 rounded-md text-[11px] font-semibold"
-    if (score >= 70) return "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-md text-[11px] font-semibold"
-    return "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 px-2 py-0.5 rounded-md text-[11px] font-semibold"
+    const base =
+      "inline-flex w-fit min-w-fit whitespace-nowrap items-center justify-center rounded-md border px-2 py-0.5 text-[11px] font-semibold"
+
+    if (score >= 90) return `${base} bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20`
+    if (score >= 80) return `${base} bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20`
+    if (score >= 70) return `${base} bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20`
+    return `${base} bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20`
   }
 
   const getSafetyLabel = (score: number) => {

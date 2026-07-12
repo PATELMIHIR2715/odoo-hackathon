@@ -365,6 +365,8 @@ Authorization: any authenticated role for reads, `ADMIN` or `FLEET_MANAGER` for 
 
 Query params: `search`, `status`, `type`, `region`, `page`, `pageSize`
 
+`search` performs a partial match across `registrationNumber`, `name`, `vehicleCode`, `manufacturer`, `model`, and `region`.
+
 Success `200`:
 
 ```json

@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import { AppLayout } from "@/components/layout/AppLayout"
 import { ProtectedRoute } from "@/routes/ProtectedRoute"
 import { DashboardPage } from "@/pages/dashboard/DashboardPage"
+import { AnalyticsPage } from "@/pages/analytics/AnalyticsPage"
 import { VehiclesPage } from "@/pages/vehicles/VehiclesPage"
 import { DriversPage } from "@/pages/drivers/DriversPage"
 import { TripsPage } from "@/pages/trips/TripsPage"
@@ -29,6 +30,7 @@ export function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/analytics" element={<AnalyticsPage />} />
           <Route path="/fleet" element={<VehiclesPage />} />
           <Route path="/drivers" element={<DriversPage />} />
           <Route path="/trips" element={<TripsPage />} />
