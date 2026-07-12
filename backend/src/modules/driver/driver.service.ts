@@ -1,6 +1,7 @@
 import { DriverStatus } from "@prisma/client";
 import { prisma } from "../../config/prisma.js";
 import { ApiError } from "../../utils/ApiError.js";
+import { ERROR_MESSAGES } from "../../constants/messages.js";
 import { parseUuid } from "../shared/operations.shared.js";
 import {
   driverInputSchema,
@@ -71,7 +72,7 @@ export const driversService = {
     });
 
     if (!item) {
-      throw new ApiError(404, "DRIVER_NOT_FOUND", "Driver not found");
+      throw new ApiError(404, "DRIVER_NOT_FOUND", ERROR_MESSAGES.DRIVER_NOT_FOUND);
     }
 
     return item;

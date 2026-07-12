@@ -10,9 +10,11 @@ import { Button } from "@/components/ui/button"
 import { useAuthStore } from "@/store/auth.store"
 import { extractErrorMessage } from "@/lib/error"
 
+import { UI_CONSTANTS } from "@/constants/ui"
+
 const loginSchema = z.object({
-  email: z.string().trim().email("Please enter a valid email address."),
-  password: z.string().min(1, "Password is required."),
+  email: z.string().trim().email(UI_CONSTANTS.AUTH.VALIDATION.EMAIL_INVALID),
+  password: z.string().min(1, UI_CONSTANTS.AUTH.VALIDATION.PASSWORD_REQUIRED),
 })
 
 type LoginFormValues = z.infer<typeof loginSchema>
@@ -40,7 +42,7 @@ export function LoginPage() {
 
     try {
       await login(values)
-      toast.success("Welcome back")
+      toast.success(UI_CONSTANTS.AUTH.WELCOME_BACK)
       navigate("/dashboard", { replace: true })
     } catch (error) {
       toast.error(extractErrorMessage(error))
@@ -56,16 +58,16 @@ export function LoginPage() {
           <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
             <Lock size={28} />
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">{UI_CONSTANTS.AUTH.SIGN_IN_TITLE}</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Access your dashboard with your email and password.
+            {UI_CONSTANTS.AUTH.SIGN_IN_SUBTITLE}
           </p>
         </div>
 
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground" htmlFor="email">
-              Email
+              {UI_CONSTANTS.AUTH.EMAIL_LABEL}
             </label>
             <div className="flex items-center gap-2 rounded-xl border border-border bg-background px-3 py-2 focus-within:border-primary">
               <UserCircle size={18} className="text-muted-foreground" />
@@ -73,7 +75,7 @@ export function LoginPage() {
                 id="email"
                 type="email"
                 autoComplete="email"
-                placeholder="name@example.com"
+                placeholder={UI_CONSTANTS.AUTH.EMAIL_PLACEHOLDER}
                 className="w-full border-none bg-transparent text-sm outline-none"
                 {...register("email")}
               />
@@ -83,7 +85,7 @@ export function LoginPage() {
 
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground" htmlFor="password">
-              Password
+              {UI_CONSTANTS.AUTH.PASSWORD_LABEL}
             </label>
             <div className="flex items-center gap-2 rounded-xl border border-border bg-background px-3 py-2 focus-within:border-primary">
               <Lock size={18} className="text-muted-foreground" />
@@ -91,7 +93,7 @@ export function LoginPage() {
                 id="password"
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
-                placeholder="Enter your password"
+                placeholder={UI_CONSTANTS.AUTH.PASSWORD_PLACEHOLDER}
                 className="w-full border-none bg-transparent text-sm outline-none"
                 {...register("password")}
               />
@@ -108,7 +110,7 @@ export function LoginPage() {
           </div>
 
           <Button className="w-full rounded-xl py-6 text-sm font-semibold" type="submit" disabled={isSubmitting}>
-            {isSubmitting ? "Signing in..." : "Sign in"}
+            {isSubmitting ? UI_CONSTANTS.AUTH.SIGNING_IN_BUTTON : UI_CONSTANTS.AUTH.SIGN_IN_BUTTON}
           </Button>
         </form>
       </div>

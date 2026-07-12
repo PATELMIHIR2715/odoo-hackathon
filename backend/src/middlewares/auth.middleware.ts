@@ -2,17 +2,18 @@ import type { NextFunction, Request, Response } from "express";
 import type { Role } from "@prisma/client";
 import { verifyAccessToken } from "../lib/jwt.js";
 import { ApiError } from "../utils/ApiError.js";
+import { ERROR_MESSAGES } from "../constants/messages.js";
 import { prisma } from "../config/prisma.js";
 import { defaultModulesForRole, type AppModule } from "../constants/modules.js";
 
 export function authenticate(req: Request, _res: Response, next: NextFunction) {
   const token = req.headers.authorization?.replace(/^Bearer\s+/i, "");
   if (!token)
-    return next(new ApiError(401, "UNAUTHORIZED", "Access token is required"));
+    return next(new ApiError(401, "UNAUTHORIZED", ERROR_MESSAGES.UNAUTHORIZED));
   try {
     const payload = verifyAccessToken(token);
     if (payload.type !== "access")
-      throw new ApiError(401, "UNAUTHORIZED", "Invalid access token");
+      throw new ApiError(401, "UNAUTHORIZED", ERROR_MESSAGES.INVALID_ACCESS_TOKEN);
 
     prisma.profile
       .findUnique({
@@ -24,7 +25,7 @@ export function authenticate(req: Request, _res: Response, next: NextFunction) {
           throw new ApiError(
             401,
             "UNAUTHORIZED",
-            "Access token is invalid or expired",
+            ERROR_MESSAGES.ACCESS_TOKEN_EXPIRED,
           );
         const moduleAccess = Array.isArray(profile.moduleAccess)
           ? profile.moduleAccess
@@ -45,13 +46,13 @@ export function authenticate(req: Request, _res: Response, next: NextFunction) {
             : new ApiError(
                 401,
                 "UNAUTHORIZED",
-                "Access token is invalid or expired",
+                ERROR_MESSAGES.ACCESS_TOKEN_EXPIRED,
               ),
         ),
       );
   } catch {
     next(
-      new ApiError(401, "UNAUTHORIZED", "Access token is invalid or expired"),
+      new ApiError(401, "UNAUTHORIZED", ERROR_MESSAGES.ACCESS_TOKEN_EXPIRED),
     );
   }
 }
@@ -60,14 +61,14 @@ export const allowRoles =
   (...roles: Role[]) =>
   (req: Request, _res: Response, next: NextFunction) =>
     !req.user
-      ? next(new ApiError(401, "UNAUTHORIZED", "Authentication is required"))
+      ? next(new ApiError(401, "UNAUTHORIZED", ERROR_MESSAGES.AUTHENTICATION_REQUIRED))
       : roles.includes(req.user.role)
         ? next()
         : next(
             new ApiError(
               403,
               "FORBIDDEN",
-              "You do not have permission for this action",
+              ERROR_MESSAGES.ACTION_FORBIDDEN,
             ),
           );
 
@@ -75,7 +76,7 @@ export const allowModules =
   (...modules: AppModule[]) =>
   (req: Request, _res: Response, next: NextFunction) =>
     !req.user
-      ? next(new ApiError(401, "UNAUTHORIZED", "Authentication is required"))
+      ? next(new ApiError(401, "UNAUTHORIZED", ERROR_MESSAGES.AUTHENTICATION_REQUIRED))
       : req.user.role === "ADMIN" ||
           modules.some((module) => req.user!.moduleAccess.includes(module))
         ? next()
@@ -83,6 +84,6 @@ export const allowModules =
             new ApiError(
               403,
               "FORBIDDEN",
-              "You do not have access to this module",
+              ERROR_MESSAGES.MODULE_ACCESS_DENIED,
             ),
           );

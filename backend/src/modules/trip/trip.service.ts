@@ -1,6 +1,7 @@
 import { DriverStatus, TripStatus, VehicleStatus } from "@prisma/client";
 import { prisma } from "../../config/prisma.js";
 import { ApiError } from "../../utils/ApiError.js";
+import { ERROR_MESSAGES } from "../../constants/messages.js";
 import { parseUuid, assertVehicleAndDriverForTrip } from "../shared/operations.shared.js";
 import { tripCompletionSchema, tripInputSchema, tripStatusSchema } from "./trip.validation.js";
 
@@ -116,7 +117,7 @@ export const tripsService = {
     });
 
     if (!item) {
-      throw new ApiError(404, "TRIP_NOT_FOUND", "Trip not found");
+      throw new ApiError(404, "TRIP_NOT_FOUND", ERROR_MESSAGES.TRIP_NOT_FOUND);
     }
 
     return item;
@@ -145,14 +146,14 @@ export const tripsService = {
     return prisma.$transaction(async (tx) => {
       const trip = await tx.trip.findUnique({ where: { id: tripId } });
       if (!trip) {
-        throw new ApiError(404, "TRIP_NOT_FOUND", "Trip not found");
+        throw new ApiError(404, "TRIP_NOT_FOUND", ERROR_MESSAGES.TRIP_NOT_FOUND);
       }
 
       if (trip.status !== TripStatus.DRAFT) {
         throw new ApiError(
           409,
           "INVALID_TRIP_STATE",
-          "Only draft trips can be dispatched",
+          ERROR_MESSAGES.ONLY_DRAFT_DISPATCHABLE,
         );
       }
 
@@ -195,7 +196,7 @@ export const tripsService = {
         throw new ApiError(
           409,
           "INVALID_TRIP_STATE",
-          "Only dispatched trips can be completed",
+          ERROR_MESSAGES.ONLY_DISPATCHED_COMPLETABLE,
         );
       }
 
@@ -248,7 +249,7 @@ export const tripsService = {
         throw new ApiError(
           409,
           "INVALID_TRIP_STATE",
-          "Only draft or dispatched trips can be cancelled",
+          ERROR_MESSAGES.ONLY_ACTIVE_CANCELLABLE,
         );
       }
 

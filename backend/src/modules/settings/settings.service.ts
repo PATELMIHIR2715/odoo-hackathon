@@ -7,6 +7,7 @@ import {
   type AppModule,
 } from "../../constants/modules.js";
 import { ApiError } from "../../utils/ApiError.js";
+import { ERROR_MESSAGES } from "../../constants/messages.js";
 
 const profileSelect = {
   id: true,
@@ -58,8 +59,9 @@ export const settingsService = {
         select: { id: true, role: true },
       });
 
-      if (!existing)
-        throw new ApiError(404, "USER_NOT_FOUND", "User not found");
+      if (!existing) {
+        throw new ApiError(404, "USER_NOT_FOUND", ERROR_MESSAGES.USER_NOT_FOUND);
+      }
 
       const nextRole = payload.role ?? existing.role;
       const nextModuleAccess = normalizeModuleAccess(
@@ -91,7 +93,7 @@ export const settingsService = {
         throw new ApiError(
           409,
           "DUPLICATE_RECORD",
-          "A record with that value already exists",
+          ERROR_MESSAGES.DUPLICATE_RECORD,
         );
       }
 

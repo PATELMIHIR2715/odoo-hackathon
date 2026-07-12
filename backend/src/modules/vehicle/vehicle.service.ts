@@ -1,6 +1,7 @@
 import { Role, VehicleStatus, VehicleType } from "@prisma/client";
 import { prisma } from "../../config/prisma.js";
 import { ApiError } from "../../utils/ApiError.js";
+import { ERROR_MESSAGES } from "../../constants/messages.js";
 import { parseUuid } from "../shared/operations.shared.js";
 import {
   vehicleInputSchema,
@@ -70,7 +71,7 @@ export const vehiclesService = {
     });
 
     if (!item) {
-      throw new ApiError(404, "VEHICLE_NOT_FOUND", "Vehicle not found");
+      throw new ApiError(404, "VEHICLE_NOT_FOUND", ERROR_MESSAGES.VEHICLE_NOT_FOUND);
     }
 
     return item;

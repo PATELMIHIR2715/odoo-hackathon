@@ -47,7 +47,7 @@ describe('TransitOps smoke tests', () => {
     assert.equal(response.status, 404);
     assert.equal(body.success, false);
     assert.equal(body.code, 'NOT_FOUND');
-    assert.match(String(body.error), /Route GET \/missing-route was not found/);
+    assert.match(String(body.error), /Route not found: GET \/missing-route/);
   });
 
   it('returns validation errors in the shared format', async () => {

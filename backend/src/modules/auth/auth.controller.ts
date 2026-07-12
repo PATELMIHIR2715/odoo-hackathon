@@ -11,6 +11,7 @@ import {
 } from "./auth.validation.js";
 import { successResponse } from "../../lib/response.js";
 import { ApiError } from "../../utils/ApiError.js";
+import { ERROR_MESSAGES } from "../../constants/messages.js";
 
 export const register: RequestHandler = async (req, res) =>
   successResponse(
@@ -26,7 +27,7 @@ export const refresh: RequestHandler = async (req, res) => {
   const { refreshToken } = refreshSchema.parse(req.body);
   const token = refreshToken ?? req.cookies?.refreshToken;
   if (!token)
-    throw new ApiError(401, "UNAUTHORIZED", "Refresh token is required");
+    throw new ApiError(401, "UNAUTHORIZED", ERROR_MESSAGES.REFRESH_TOKEN_REQUIRED);
   return successResponse(res, await authService.refresh(token));
 };
 export const logout: RequestHandler = async (req, res) => {

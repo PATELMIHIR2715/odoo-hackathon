@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useForm, Controller } from "react-hook-form"
+import { UI_CONSTANTS } from "@/constants/ui"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "sonner"
@@ -55,16 +56,16 @@ const vehicleFormSchema = z.object({
   registrationNumber: z
     .string()
     .trim()
-    .min(1, "Registration number is required")
+    .min(1, UI_CONSTANTS.VEHICLES.VALIDATION.REG_REQUIRED)
     .toUpperCase(),
-  name: z.string().trim().min(1, "Name/model is required"),
+  name: z.string().trim().min(1, UI_CONSTANTS.VEHICLES.VALIDATION.NAME_REQUIRED),
   type: z.enum(["VAN", "TRUCK", "MINI", "CAR", "BUS", "SUV", "PICKUP", "OTHER"], {
-    message: "Please select a vehicle type",
+    message: UI_CONSTANTS.VEHICLES.VALIDATION.TYPE_REQUIRED,
   }),
-  maxLoadCapacityKg: z.number({ message: "Capacity is required" }).positive("Capacity must be greater than 0"),
-  odometerKm: z.number({ message: "Odometer is required" }).nonnegative("Odometer reading cannot be negative"),
-  acquisitionCost: z.number({ message: "Acquisition cost is required" }).positive("Acquisition cost must be greater than 0"),
-  region: z.string().trim().min(1, "Region is required"),
+  maxLoadCapacityKg: z.number({ message: UI_CONSTANTS.VEHICLES.VALIDATION.CAPACITY_REQUIRED }).positive(UI_CONSTANTS.VEHICLES.VALIDATION.CAPACITY_POSITIVE),
+  odometerKm: z.number({ message: UI_CONSTANTS.VEHICLES.VALIDATION.ODOMETER_REQUIRED }).nonnegative(UI_CONSTANTS.VEHICLES.VALIDATION.ODOMETER_NONNEGATIVE),
+  acquisitionCost: z.number({ message: UI_CONSTANTS.VEHICLES.VALIDATION.COST_REQUIRED }).positive(UI_CONSTANTS.VEHICLES.VALIDATION.COST_POSITIVE),
+  region: z.string().trim().min(1, UI_CONSTANTS.VEHICLES.VALIDATION.REGION_REQUIRED),
   status: z.enum(["AVAILABLE", "ON_TRIP", "IN_SHOP", "RETIRED"]).optional(),
 })
 
@@ -154,7 +155,7 @@ export function VehiclesPage() {
         setVehicles(response.data.items)
         setPagination(response.data.pagination)
       } else {
-        toast.error("Failed to load vehicles")
+        toast.error(UI_CONSTANTS.VEHICLES.TOAST_LOAD_FAIL)
       }
     } catch (err) {
       toast.error(extractErrorMessage(err))
@@ -225,12 +226,12 @@ export function VehiclesPage() {
         region: values.region,
       })
       if (response.success) {
-        toast.success("Vehicle added successfully")
+        toast.success(UI_CONSTANTS.VEHICLES.TOAST_ADD_SUCCESS)
         setIsAddOpen(false)
         reset()
         fetchVehicles()
       } else {
-        toast.error("Failed to create vehicle")
+        toast.error(UI_CONSTANTS.VEHICLES.TOAST_ADD_FAIL)
       }
     } catch (err) {
       toast.error(extractErrorMessage(err))
@@ -258,7 +259,7 @@ export function VehiclesPage() {
           status: response.data.status,
         })
       } else {
-        toast.error("Failed to fetch vehicle details")
+        toast.error(UI_CONSTANTS.VEHICLES.TOAST_DETAILS_FAIL)
         setIsEditOpen(false)
       }
     } catch (err) {
@@ -284,13 +285,13 @@ export function VehiclesPage() {
         status: values.status as VehicleStatus,
       })
       if (response.success) {
-        toast.success("Vehicle updated successfully")
+        toast.success(UI_CONSTANTS.VEHICLES.TOAST_EDIT_SUCCESS)
         setIsEditOpen(false)
         setSelectedVehicle(null)
         reset()
         fetchVehicles()
       } else {
-        toast.error("Failed to update vehicle")
+        toast.error(UI_CONSTANTS.VEHICLES.TOAST_EDIT_FAIL)
       }
     } catch (err) {
       toast.error(extractErrorMessage(err))
@@ -308,7 +309,7 @@ export function VehiclesPage() {
       if (response.success) {
         setSelectedVehicle(response.data)
       } else {
-        toast.error("Failed to fetch vehicle details")
+        toast.error(UI_CONSTANTS.VEHICLES.TOAST_DETAILS_FAIL)
         setIsDetailsOpen(false)
       }
     } catch (err) {
@@ -331,12 +332,12 @@ export function VehiclesPage() {
     try {
       const response = await deleteVehicleService(selectedVehicle.id)
       if (response.success) {
-        toast.success(`Vehicle ${selectedVehicle.registrationNumber} retired successfully`)
+        toast.success(`${selectedVehicle.registrationNumber}: ${UI_CONSTANTS.VEHICLES.TOAST_RETIRE_SUCCESS}`)
         setIsDeleteOpen(false)
         setSelectedVehicle(null)
         fetchVehicles()
       } else {
-        toast.error("Failed to retire vehicle")
+        toast.error(UI_CONSTANTS.VEHICLES.TOAST_RETIRE_FAIL)
       }
     } catch (err) {
       toast.error(extractErrorMessage(err))
@@ -368,9 +369,9 @@ export function VehiclesPage() {
       {/* Top action block */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Vehicles Fleet</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{UI_CONSTANTS.VEHICLES.HEADER_TITLE}</h1>
           <p className="text-sm text-muted-foreground">
-            Manage your operations fleet, track capacities, and vehicle status.
+            {UI_CONSTANTS.VEHICLES.HEADER_SUBTITLE}
           </p>
         </div>
         <Button
@@ -389,7 +390,7 @@ export function VehiclesPage() {
           className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/95"
         >
           <Plus size={16} className="mr-2" />
-          Add Vehicle
+          {UI_CONSTANTS.VEHICLES.ADD_VEHICLE}
         </Button>
       </div>
 
@@ -400,7 +401,7 @@ export function VehiclesPage() {
           <Search size={16} className="text-muted-foreground mr-2" />
           <input
             type="text"
-            placeholder="Search reg. no..."
+            placeholder={UI_CONSTANTS.VEHICLES.SEARCH_PLACEHOLDER}
             value={searchFilter}
             onChange={(e) => handleSearchChange(e.target.value)}
             className="w-full border-none bg-transparent text-xs outline-none text-foreground placeholder:text-muted-foreground"
@@ -409,7 +410,7 @@ export function VehiclesPage() {
 
         {/* Type Select */}
         <div className="flex items-center gap-1.5">
-          <span className="text-xs text-muted-foreground">Type:</span>
+          <span className="text-xs text-muted-foreground">{UI_CONSTANTS.VEHICLES.FILTER_TYPE}</span>
           <Select value={typeFilter} onValueChange={handleTypeChange}>
             <SelectTrigger className="w-[120px] rounded-xl text-xs">
               <SelectValue placeholder="All Types" />
@@ -430,7 +431,7 @@ export function VehiclesPage() {
 
         {/* Status Select */}
         <div className="flex items-center gap-1.5">
-          <span className="text-xs text-muted-foreground">Status:</span>
+          <span className="text-xs text-muted-foreground">{UI_CONSTANTS.VEHICLES.FILTER_STATUS}</span>
           <Select value={statusFilter} onValueChange={handleStatusChange}>
             <SelectTrigger className="w-[130px] rounded-xl text-xs">
               <SelectValue placeholder="All Statuses" />
@@ -452,14 +453,14 @@ export function VehiclesPage() {
           <table className="w-full border-collapse text-left text-xs">
             <thead>
               <tr className="border-b border-border/85 bg-muted/30 text-muted-foreground font-semibold uppercase tracking-wider">
-                <th className="px-6 py-3.5">Reg. No. (Unique)</th>
-                <th className="px-6 py-3.5">Name/Model</th>
-                <th className="px-6 py-3.5">Type</th>
-                <th className="px-6 py-3.5">Capacity</th>
-                <th className="px-6 py-3.5">Odometer</th>
-                <th className="px-6 py-3.5">Acq. Cost</th>
-                <th className="px-6 py-3.5">Status</th>
-                <th className="px-6 py-3.5 text-right">Actions</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.VEHICLES.TABLE_REG_NO}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.VEHICLES.TABLE_NAME}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.VEHICLES.TABLE_TYPE}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.VEHICLES.TABLE_CAPACITY}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.VEHICLES.TABLE_ODOMETER}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.VEHICLES.TABLE_ACQ_COST}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.VEHICLES.TABLE_STATUS}</th>
+                <th className="px-6 py-3.5 text-right">{UI_CONSTANTS.VEHICLES.TABLE_ACTIONS}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/70">
@@ -468,14 +469,14 @@ export function VehiclesPage() {
                   <td colSpan={8} className="py-10 text-center">
                     <div className="flex items-center justify-center gap-2 text-muted-foreground">
                       <Loader2 size={18} className="animate-spin text-primary" />
-                      Loading fleet...
+                      {UI_CONSTANTS.VEHICLES.LOADING_TEXT}
                     </div>
                   </td>
                 </tr>
               ) : vehicles.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-10 text-center text-muted-foreground">
-                    No vehicles found matching the filters.
+                    {UI_CONSTANTS.VEHICLES.NO_VEHICLES}
                   </td>
                 </tr>
               ) : (
@@ -1065,22 +1066,12 @@ export function VehiclesPage() {
         <DialogContent className="sm:max-w-sm rounded-2xl bg-card border border-border p-6 shadow-lg">
           <DialogHeader>
             <DialogTitle className="text-lg font-bold text-destructive">
-              Retire Vehicle
+              {UI_CONSTANTS.VEHICLES.DELETE_TITLE}
             </DialogTitle>
             <DialogDescription>
-              Are you sure you want to retire vehicle{" "}
-              <span className="font-mono font-bold text-foreground">
-                {selectedVehicle?.registrationNumber}
-              </span>
-              ?
+              {UI_CONSTANTS.VEHICLES.DELETE_DESC} (Registration: <span className="font-mono font-bold text-foreground">{selectedVehicle?.registrationNumber}</span>)
             </DialogDescription>
           </DialogHeader>
-
-          <div className="py-2 text-xs text-muted-foreground">
-            This action will soft-retire the vehicle by changing its status to{" "}
-            <span className="font-semibold text-rose-500 font-mono">RETIRED</span>.
-            Retired vehicles are hidden from the Trip Dispatcher.
-          </div>
 
           <DialogFooter className="pt-2">
             <Button
@@ -1090,7 +1081,7 @@ export function VehiclesPage() {
               className="rounded-xl py-5"
               disabled={submitting}
             >
-              Cancel
+              {UI_CONSTANTS.COMMON.CANCEL}
             </Button>
             <Button
               type="button"
@@ -1105,7 +1096,7 @@ export function VehiclesPage() {
                   Retiring...
                 </>
               ) : (
-                "Retire Vehicle"
+                UI_CONSTANTS.VEHICLES.DELETE_TITLE
               )}
             </Button>
           </DialogFooter>

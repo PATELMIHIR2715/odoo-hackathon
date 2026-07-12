@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useSearchParams } from "react-router-dom"
-import { useForm, Controller } from "react-hook-form"
+import { useForm, Controller, useWatch } from "react-hook-form"
+import { UI_CONSTANTS } from "@/constants/ui"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "sonner"
@@ -58,16 +59,16 @@ import { extractErrorMessage } from "@/lib/error"
 
 // Validation Schemas
 const createTripSchema = z.object({
-  source: z.string().trim().min(1, "Source location is required"),
-  destination: z.string().trim().min(1, "Destination location is required"),
-  vehicleId: z.string().trim().min(1, "Vehicle selection is required"),
-  driverId: z.string().trim().min(1, "Driver selection is required"),
+  source: z.string().trim().min(1, UI_CONSTANTS.TRIPS.VALIDATION.SOURCE_REQUIRED),
+  destination: z.string().trim().min(1, UI_CONSTANTS.TRIPS.VALIDATION.DEST_REQUIRED),
+  vehicleId: z.string().trim().min(1, UI_CONSTANTS.TRIPS.VALIDATION.VEHICLE_REQUIRED),
+  driverId: z.string().trim().min(1, UI_CONSTANTS.TRIPS.VALIDATION.DRIVER_REQUIRED),
   cargoWeightKg: z
-    .number({ message: "Cargo weight is required" })
-    .positive("Weight must be greater than 0"),
+    .number({ message: UI_CONSTANTS.TRIPS.VALIDATION.CARGO_REQUIRED })
+    .positive(UI_CONSTANTS.TRIPS.VALIDATION.CARGO_POSITIVE),
   plannedDistance: z
-    .number({ message: "Planned distance is required" })
-    .positive("Distance must be greater than 0"),
+    .number({ message: UI_CONSTANTS.TRIPS.VALIDATION.PLANNED_DIST_REQUIRED })
+    .positive(UI_CONSTANTS.TRIPS.VALIDATION.PLANNED_DIST_POSITIVE),
 })
 
 type CreateTripFormValues = z.infer<typeof createTripSchema>
@@ -79,12 +80,12 @@ const positiveOptionalNumber = z
     if (val === "" || val === null || val === undefined) return true
     const num = Number(val)
     return !isNaN(num) && num > 0
-  }, "Must be a positive number")
+  }, UI_CONSTANTS.TRIPS.VALIDATION.POSITIVE_NUMBER)
 
 const completeTripSchema = z.object({
   actualDistance: z
-    .number({ message: "Actual distance is required" })
-    .positive("Actual distance must be greater than 0"),
+    .number({ message: UI_CONSTANTS.TRIPS.VALIDATION.ACTUAL_DIST_REQUIRED })
+    .positive(UI_CONSTANTS.TRIPS.VALIDATION.ACTUAL_DIST_POSITIVE),
   fuelConsumedL: positiveOptionalNumber,
   fuelCost: positiveOptionalNumber,
 })
@@ -174,9 +175,9 @@ export function TripsPage() {
     },
   })
 
-  // Watchers for Cargo Warning Calculations
-  const watchedVehicleId = watchCreate("vehicleId")
-  const watchedCargoWeight = watchCreate("cargoWeightKg") || 0
+  // Watchers for Cargo Warning Calculations using useWatch to satisfy React compiler
+  const watchedVehicleId = useWatch({ control: controlCreate, name: "vehicleId" })
+  const watchedCargoWeight = useWatch({ control: controlCreate, name: "cargoWeightKg" }) || 0
 
   const selectedVehicleObj = availableVehicles.find((v) => v.id === watchedVehicleId)
   const isCapacityExceeded =
@@ -194,7 +195,7 @@ export function TripsPage() {
         setTrips(response.data.items)
         setPagination(response.data.pagination)
       } else {
-        toast.error("Failed to load trips list")
+        toast.error(UI_CONSTANTS.TRIPS.TOAST_LOAD_FAIL)
       }
     } catch (err) {
       toast.error(extractErrorMessage(err))
@@ -219,7 +220,7 @@ export function TripsPage() {
         setAvailableDrivers(availDrivers)
       }
     } catch (err) {
-      toast.error("Failed to fetch available vehicles/drivers options")
+      toast.error(UI_CONSTANTS.TRIPS.TOAST_ENTITIES_FAIL)
       console.error(err)
     } finally {
       setLoadingOptions(false)
@@ -258,19 +259,19 @@ export function TripsPage() {
           // 2. Transition immediately to DISPATCHED
           const dispatchResponse = await dispatchTripService(createdTrip.id)
           if (dispatchResponse.success) {
-            toast.success("Trip created and dispatched successfully")
+            toast.success(UI_CONSTANTS.TRIPS.TOAST_CREATE_SUCCESS_DISPATCHED)
           } else {
-            toast.warning("Trip created as Draft, but dispatch request failed")
+            toast.warning(UI_CONSTANTS.TRIPS.TOAST_CREATE_WARNING_DISPATCH_FAIL)
           }
         } else {
-          toast.success("Trip draft created successfully")
+          toast.success(UI_CONSTANTS.TRIPS.TOAST_CREATE_SUCCESS_DRAFT)
         }
 
         setIsCreateOpen(false)
         resetCreate()
         fetchTrips()
       } else {
-        toast.error("Failed to create trip")
+        toast.error(UI_CONSTANTS.TRIPS.TOAST_CREATE_FAIL)
       }
     } catch (err) {
       toast.error(extractErrorMessage(err))
@@ -283,10 +284,10 @@ export function TripsPage() {
     try {
       const response = await dispatchTripService(id)
       if (response.success) {
-        toast.success("Trip dispatched successfully")
+        toast.success(UI_CONSTANTS.TRIPS.TOAST_DISPATCH_SUCCESS)
         fetchTrips()
       } else {
-        toast.error("Failed to dispatch trip")
+        toast.error(UI_CONSTANTS.TRIPS.TOAST_DISPATCH_FAIL)
       }
     } catch (err) {
       toast.error(extractErrorMessage(err))
@@ -297,10 +298,10 @@ export function TripsPage() {
     try {
       const response = await cancelTripService(id)
       if (response.success) {
-        toast.success("Trip cancelled successfully")
+        toast.success(UI_CONSTANTS.TRIPS.TOAST_CANCEL_SUCCESS)
         fetchTrips()
       } else {
-        toast.error("Failed to cancel trip")
+        toast.error(UI_CONSTANTS.TRIPS.TOAST_CANCEL_FAIL)
       }
     } catch (err) {
       toast.error(extractErrorMessage(err))
@@ -328,12 +329,12 @@ export function TripsPage() {
         fuelCost: fuelC && !isNaN(fuelC) ? fuelC : undefined,
       })
       if (response.success) {
-        toast.success("Trip marked as Completed")
+        toast.success(UI_CONSTANTS.TRIPS.TOAST_COMPLETE_SUCCESS)
         setIsCompleteOpen(false)
         setSelectedTrip(null)
         fetchTrips()
       } else {
-        toast.error("Failed to complete trip")
+        toast.error(UI_CONSTANTS.TRIPS.TOAST_COMPLETE_FAIL)
       }
     } catch (err) {
       toast.error(extractErrorMessage(err))
@@ -352,9 +353,9 @@ export function TripsPage() {
       {/* Top action block */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Trips Dispatch</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{UI_CONSTANTS.TRIPS.HEADER_TITLE}</h1>
           <p className="text-sm text-muted-foreground">
-            Plan cargo shipments, select available vehicles & drivers, and track lifecycle status.
+            {UI_CONSTANTS.TRIPS.HEADER_SUBTITLE}
           </p>
         </div>
         <Button
@@ -372,7 +373,7 @@ export function TripsPage() {
           className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/95"
         >
           <Plus size={16} className="mr-2" />
-          Create Trip
+          {UI_CONSTANTS.TRIPS.CREATE_TRIP}
         </Button>
       </div>
 
@@ -382,14 +383,14 @@ export function TripsPage() {
           <table className="w-full border-collapse text-left text-xs">
             <thead>
               <tr className="border-b border-border/85 bg-muted/30 text-muted-foreground font-semibold uppercase tracking-wider">
-                <th className="px-6 py-3.5">Trip ID</th>
-                <th className="px-6 py-3.5">Route</th>
-                <th className="px-6 py-3.5">Vehicle</th>
-                <th className="px-6 py-3.5">Driver</th>
-                <th className="px-6 py-3.5">Cargo Weight</th>
-                <th className="px-6 py-3.5">Distance</th>
-                <th className="px-6 py-3.5">Status</th>
-                <th className="px-6 py-3.5 text-right">Actions</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.TRIPS.TABLE_TRIP_ID}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.TRIPS.TABLE_ROUTE}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.TRIPS.TABLE_VEHICLE}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.TRIPS.TABLE_DRIVER}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.TRIPS.TABLE_CARGO}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.TRIPS.TABLE_DISTANCE}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.TRIPS.TABLE_STATUS}</th>
+                <th className="px-6 py-3.5 text-right">{UI_CONSTANTS.TRIPS.TABLE_ACTIONS}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/70">
@@ -398,14 +399,14 @@ export function TripsPage() {
                   <td colSpan={8} className="py-10 text-center">
                     <div className="flex items-center justify-center gap-2 text-muted-foreground">
                       <Loader2 size={18} className="animate-spin text-primary" />
-                      Loading trips...
+                      {UI_CONSTANTS.TRIPS.LOADING_TEXT}
                     </div>
                   </td>
                 </tr>
               ) : trips.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="py-10 text-center text-muted-foreground">
-                    No dispatch trips found. Create a new trip to start.
+                    {UI_CONSTANTS.TRIPS.NO_TRIPS}
                   </td>
                 </tr>
               ) : (

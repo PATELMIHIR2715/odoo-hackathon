@@ -8,6 +8,7 @@ import {
 } from "@prisma/client";
 import { z } from "zod";
 import { ApiError } from "../../utils/ApiError.js";
+import { ERROR_MESSAGES } from "../../constants/messages.js";
 import { successResponse } from "../../lib/response.js";
 
 export const allRoles = Object.values(Role);
@@ -73,12 +74,12 @@ export async function assertVehicleAndDriverForTrip(
     throw new ApiError(
       404,
       "RESOURCE_NOT_FOUND",
-      "Vehicle or driver was not found",
+      ERROR_MESSAGES.RESOURCE_NOT_FOUND,
     );
   }
 
   if (vehicle.status !== VehicleStatus.AVAILABLE) {
-    throw new ApiError(409, "VEHICLE_UNAVAILABLE", "Vehicle is not available");
+    throw new ApiError(409, "VEHICLE_UNAVAILABLE", ERROR_MESSAGES.VEHICLE_UNAVAILABLE);
   }
 
   if (
@@ -88,7 +89,7 @@ export async function assertVehicleAndDriverForTrip(
     throw new ApiError(
       409,
       "DRIVER_UNAVAILABLE",
-      "Driver is unavailable or has an expired license",
+      ERROR_MESSAGES.DRIVER_UNAVAILABLE,
     );
   }
 
@@ -96,7 +97,7 @@ export async function assertVehicleAndDriverForTrip(
     throw new ApiError(
       400,
       "CAPACITY_EXCEEDED",
-      "Cargo weight exceeds vehicle capacity",
+      ERROR_MESSAGES.CAPACITY_EXCEEDED,
     );
   }
 

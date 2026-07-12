@@ -87,7 +87,10 @@ model Profile {
 model Vehicle {
   id                 String        @id @default(uuid())
   registrationNumber String        @unique
+  vehicleCode        String        @unique
   name               String
+  manufacturer       String
+  model              String
   type               VehicleType
   maxLoadCapacityKg  Float
   odometerKm         Float         @default(0)

@@ -1,6 +1,7 @@
 import { MaintenanceStatus, VehicleStatus } from "@prisma/client";
 import { prisma } from "../../config/prisma.js";
 import { ApiError } from "../../utils/ApiError.js";
+import { ERROR_MESSAGES } from "../../constants/messages.js";
 import { parseUuid } from "../shared/operations.shared.js";
 import {
   createMaintenanceSchema,
@@ -50,7 +51,7 @@ export const maintenanceService = {
       });
 
       if (!vehicle) {
-        throw new ApiError(404, "VEHICLE_NOT_FOUND", "Vehicle not found");
+        throw new ApiError(404, "VEHICLE_NOT_FOUND", ERROR_MESSAGES.VEHICLE_NOT_FOUND);
       }
 
       if (
@@ -60,7 +61,7 @@ export const maintenanceService = {
         throw new ApiError(
           409,
           "VEHICLE_UNAVAILABLE",
-          "Vehicle cannot be put into maintenance",
+          ERROR_MESSAGES.VEHICLE_MAINTENANCE_BLOCKED,
         );
       }
 
@@ -83,7 +84,7 @@ export const maintenanceService = {
         throw new ApiError(
           404,
           "MAINTENANCE_NOT_FOUND",
-          "Maintenance record not found",
+          ERROR_MESSAGES.MAINTENANCE_NOT_FOUND,
         );
       }
 
@@ -91,7 +92,7 @@ export const maintenanceService = {
         throw new ApiError(
           409,
           "INVALID_MAINTENANCE_STATE",
-          "Maintenance record is already closed",
+          ERROR_MESSAGES.MAINTENANCE_ALREADY_CLOSED,
         );
       }
 

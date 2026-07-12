@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useForm, Controller } from "react-hook-form"
+import { UI_CONSTANTS } from "@/constants/ui"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "sonner"
@@ -52,17 +53,17 @@ import { extractErrorMessage } from "@/lib/error"
 
 // Validation Schemas
 const driverFormSchema = z.object({
-  name: z.string().trim().min(1, "Driver name is required"),
-  licenseNumber: z.string().trim().min(1, "License number is required"),
-  licenseCategory: z.string().trim().min(1, "License category is required"),
-  licenseExpiryDate: z.string().min(1, "License expiry date is required"),
-  contactNumber: z.string().trim().min(1, "Contact number is required"),
+  name: z.string().trim().min(1, UI_CONSTANTS.DRIVERS.VALIDATION.NAME_REQUIRED),
+  licenseNumber: z.string().trim().min(1, UI_CONSTANTS.DRIVERS.VALIDATION.LICENSE_REQUIRED),
+  licenseCategory: z.string().trim().min(1, UI_CONSTANTS.DRIVERS.VALIDATION.LICENSE_CAT_REQUIRED),
+  licenseExpiryDate: z.string().min(1, UI_CONSTANTS.DRIVERS.VALIDATION.LICENSE_EXP_REQUIRED),
+  contactNumber: z.string().trim().min(1, UI_CONSTANTS.DRIVERS.VALIDATION.CONTACT_REQUIRED),
   safetyScore: z
-    .number({ message: "Safety score is required" })
-    .min(0, "Safety score cannot be less than 0")
-    .max(100, "Safety score cannot exceed 100"),
+    .number({ message: UI_CONSTANTS.DRIVERS.VALIDATION.SAFETY_REQUIRED })
+    .min(0, UI_CONSTANTS.DRIVERS.VALIDATION.SAFETY_MIN)
+    .max(100, UI_CONSTANTS.DRIVERS.VALIDATION.SAFETY_MAX),
   status: z.enum(["AVAILABLE", "ON_TRIP", "SUSPENDED", "OFF_DUTY"], {
-    message: "Please select a valid status",
+    message: UI_CONSTANTS.DRIVERS.VALIDATION.STATUS_REQUIRED,
   }),
 })
 
@@ -148,7 +149,7 @@ export function DriversPage() {
         setDrivers(response.data.items)
         setPagination(response.data.pagination)
       } else {
-        toast.error("Failed to load drivers")
+        toast.error(UI_CONSTANTS.DRIVERS.TOAST_LOAD_FAIL)
       }
     } catch (err) {
       toast.error(extractErrorMessage(err))
@@ -195,12 +196,12 @@ export function DriversPage() {
         status: values.status,
       })
       if (response.success) {
-        toast.success("Driver added successfully")
+        toast.success(UI_CONSTANTS.DRIVERS.TOAST_ADD_SUCCESS)
         setIsAddOpen(false)
         reset()
         fetchDrivers()
       } else {
-        toast.error("Failed to create driver")
+        toast.error(UI_CONSTANTS.DRIVERS.TOAST_ADD_FAIL)
       }
     } catch (err) {
       toast.error(extractErrorMessage(err))
@@ -232,7 +233,7 @@ export function DriversPage() {
           status: response.data.status,
         })
       } else {
-        toast.error("Failed to fetch driver details")
+        toast.error(UI_CONSTANTS.DRIVERS.TOAST_DETAILS_FAIL)
         setIsEditOpen(false)
       }
     } catch (err) {
@@ -257,13 +258,13 @@ export function DriversPage() {
         status: values.status,
       })
       if (response.success) {
-        toast.success("Driver updated successfully")
+        toast.success(UI_CONSTANTS.DRIVERS.TOAST_EDIT_SUCCESS)
         setIsEditOpen(false)
         setSelectedDriver(null)
         reset()
         fetchDrivers()
       } else {
-        toast.error("Failed to update driver")
+        toast.error(UI_CONSTANTS.DRIVERS.TOAST_EDIT_FAIL)
       }
     } catch (err) {
       toast.error(extractErrorMessage(err))
@@ -281,7 +282,7 @@ export function DriversPage() {
       if (response.success) {
         setSelectedDriver(response.data)
       } else {
-        toast.error("Failed to fetch driver details")
+        toast.error(UI_CONSTANTS.DRIVERS.TOAST_DETAILS_FAIL)
         setIsDetailsOpen(false)
       }
     } catch (err) {
@@ -305,7 +306,7 @@ export function DriversPage() {
       // Soft suspend or delete if supported
       const response = await deleteDriverService(selectedDriver.id)
       if (response.success) {
-        toast.success(`Driver ${selectedDriver.name} deleted successfully`)
+        toast.success(`${selectedDriver.name}: ${UI_CONSTANTS.DRIVERS.TOAST_SUSPEND_SUCCESS}`)
         setIsDeleteOpen(false)
         setSelectedDriver(null)
         fetchDrivers()
@@ -315,12 +316,12 @@ export function DriversPage() {
           status: "SUSPENDED",
         })
         if (patchResponse.success) {
-          toast.success(`Driver ${selectedDriver.name} suspended successfully`)
+          toast.success(`${selectedDriver.name}: ${UI_CONSTANTS.DRIVERS.TOAST_SUSPEND_SUCCESS}`)
           setIsDeleteOpen(false)
           setSelectedDriver(null)
           fetchDrivers()
         } else {
-          toast.error("Failed to delete/suspend driver")
+          toast.error(UI_CONSTANTS.DRIVERS.TOAST_SUSPEND_FAIL)
         }
       }
     } catch {
@@ -389,9 +390,9 @@ export function DriversPage() {
       {/* Top action block */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight">Drivers Registry</h1>
+          <h1 className="text-2xl font-bold tracking-tight">{UI_CONSTANTS.DRIVERS.HEADER_TITLE}</h1>
           <p className="text-sm text-muted-foreground">
-            Manage operational driver profiles, license records, and safety performance.
+            {UI_CONSTANTS.DRIVERS.HEADER_SUBTITLE}
           </p>
         </div>
         <Button
@@ -410,7 +411,7 @@ export function DriversPage() {
           className="rounded-xl bg-primary text-primary-foreground hover:bg-primary/95"
         >
           <Plus size={16} className="mr-2" />
-          Add Driver
+          {UI_CONSTANTS.DRIVERS.ADD_DRIVER}
         </Button>
       </div>
 
@@ -421,7 +422,7 @@ export function DriversPage() {
           <Search size={16} className="text-muted-foreground mr-2" />
           <input
             type="text"
-            placeholder="Search driver by name or license..."
+            placeholder={UI_CONSTANTS.DRIVERS.SEARCH_PLACEHOLDER}
             value={searchFilter}
             onChange={(e) => handleSearchChange(e.target.value)}
             className="w-full border-none bg-transparent text-xs outline-none text-foreground placeholder:text-muted-foreground"
@@ -435,15 +436,15 @@ export function DriversPage() {
           <table className="w-full border-collapse text-left text-xs">
             <thead>
               <tr className="border-b border-border/85 bg-muted/30 text-muted-foreground font-semibold uppercase tracking-wider">
-                <th className="px-6 py-3.5">Driver</th>
-                <th className="px-6 py-3.5">License No.</th>
-                <th className="px-6 py-3.5">Category</th>
-                <th className="px-6 py-3.5">Expiry</th>
-                <th className="px-6 py-3.5">Contact</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.DRIVERS.TABLE_NAME}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.DRIVERS.TABLE_LICENSE}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.DRIVERS.TABLE_CLASS}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.DRIVERS.TABLE_EXPIRY}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.DRIVERS.TABLE_CONTACT}</th>
                 <th className="px-6 py-3.5">Trip Compl.</th>
-                <th className="px-6 py-3.5">Safety</th>
-                <th className="px-6 py-3.5">Status</th>
-                <th className="px-6 py-3.5 text-right">Actions</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.DRIVERS.TABLE_SAFETY}</th>
+                <th className="px-6 py-3.5">{UI_CONSTANTS.DRIVERS.TABLE_STATUS}</th>
+                <th className="px-6 py-3.5 text-right">{UI_CONSTANTS.DRIVERS.TABLE_ACTIONS}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border/70">
@@ -452,14 +453,14 @@ export function DriversPage() {
                   <td colSpan={9} className="py-10 text-center">
                     <div className="flex items-center justify-center gap-2 text-muted-foreground">
                       <Loader2 size={18} className="animate-spin text-primary" />
-                      Loading drivers...
+                      {UI_CONSTANTS.DRIVERS.LOADING_TEXT}
                     </div>
                   </td>
                 </tr>
               ) : drivers.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="py-10 text-center text-muted-foreground">
-                    No drivers found.
+                    {UI_CONSTANTS.DRIVERS.NO_DRIVERS}
                   </td>
                 </tr>
               ) : (

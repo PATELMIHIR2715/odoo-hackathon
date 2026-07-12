@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useForm, Controller } from "react-hook-form"
+import { UI_CONSTANTS } from "@/constants/ui"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { toast } from "sonner"
@@ -51,11 +52,11 @@ import { extractErrorMessage } from "@/lib/error"
 
 // Validation Schema
 const createMaintenanceSchema = z.object({
-  vehicleId: z.string().trim().min(1, "Vehicle selection is required"),
-  description: z.string().trim().min(1, "Description is required"),
+  vehicleId: z.string().trim().min(1, UI_CONSTANTS.MAINTENANCE.VALIDATION.VEHICLE_REQUIRED),
+  description: z.string().trim().min(1, UI_CONSTANTS.MAINTENANCE.VALIDATION.DESC_REQUIRED),
   cost: z
-    .number({ message: "Cost is required" })
-    .positive("Cost must be greater than 0"),
+    .number({ message: UI_CONSTANTS.MAINTENANCE.VALIDATION.COST_REQUIRED })
+    .positive(UI_CONSTANTS.MAINTENANCE.VALIDATION.COST_NONNEGATIVE),
 })
 
 type CreateMaintenanceFormValues = z.infer<typeof createMaintenanceSchema>

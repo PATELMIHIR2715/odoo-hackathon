@@ -6,6 +6,7 @@ import {
   verifyRefreshToken,
 } from "../../lib/jwt.js";
 import { ApiError } from "../../utils/ApiError.js";
+import { ERROR_MESSAGES } from "../../constants/messages.js";
 import { Role, type Role as RoleType } from "@prisma/client";
 import { createHash, randomBytes } from "node:crypto";
 import { env } from "../../config/env.js";
@@ -49,7 +50,7 @@ export const authService = {
       throw new ApiError(
         409,
         "EMAIL_TAKEN",
-        "An account with this email already exists",
+        ERROR_MESSAGES.EMAIL_TAKEN,
       );
     const profile = await prisma.profile.create({
       data: {
@@ -70,7 +71,7 @@ export const authService = {
       throw new ApiError(
         401,
         "INVALID_CREDENTIALS",
-        "Email or password is incorrect",
+        ERROR_MESSAGES.INVALID_CREDENTIALS,
       );
     return { user: publicProfile(profile), ...(await tokensFor(profile)) };
   },
@@ -82,11 +83,11 @@ export const authService = {
       throw new ApiError(
         401,
         "INVALID_REFRESH_TOKEN",
-        "Refresh token is invalid or expired",
+        ERROR_MESSAGES.INVALID_REFRESH_TOKEN,
       );
     }
     if (payload.type !== "refresh")
-      throw new ApiError(401, "INVALID_REFRESH_TOKEN", "Invalid token type");
+      throw new ApiError(401, "INVALID_REFRESH_TOKEN", ERROR_MESSAGES.INVALID_TOKEN_TYPE);
     const profile = await prisma.profile.findUnique({
       where: { id: payload.sub },
     });
@@ -97,7 +98,7 @@ export const authService = {
       throw new ApiError(
         401,
         "INVALID_REFRESH_TOKEN",
-        "Refresh token has been revoked",
+        ERROR_MESSAGES.REFRESH_TOKEN_REVOKED,
       );
     return { user: publicProfile(profile), ...(await tokensFor(profile)) };
   },
@@ -109,7 +110,7 @@ export const authService = {
   },
   async me(id: string) {
     const profile = await prisma.profile.findUnique({ where: { id } });
-    if (!profile) throw new ApiError(404, "USER_NOT_FOUND", "User not found");
+    if (!profile) throw new ApiError(404, "USER_NOT_FOUND", ERROR_MESSAGES.USER_NOT_FOUND);
     return publicProfile(profile);
   },
   async updateProfile(id: string, fullName: string) {
@@ -127,7 +128,7 @@ export const authService = {
       throw new ApiError(
         401,
         "INVALID_CREDENTIALS",
-        "Current password is incorrect",
+        ERROR_MESSAGES.CURRENT_PASSWORD_INCORRECT,
       );
     await prisma.profile.update({
       where: { id },
@@ -166,7 +167,7 @@ export const authService = {
       throw new ApiError(
         400,
         "INVALID_RESET_TOKEN",
-        "Password reset token is invalid or expired",
+        ERROR_MESSAGES.INVALID_RESET_TOKEN,
       );
     await prisma.profile.update({
       where: { id: profile.id },
