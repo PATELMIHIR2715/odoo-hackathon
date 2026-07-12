@@ -24,3 +24,10 @@ export const getOperationalCostReport: RequestHandler = async (req, res) => {
     ),
   );
 };
+
+export const getAnalyticsOverview: RequestHandler = async (req, res) => {
+  return successResponse(
+    res,
+    await analyticsService.overview(analyticsQuerySchema.parse(req.query)),
+  );
+};

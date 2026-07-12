@@ -759,6 +759,7 @@ Authorization varies by route:
 - `GET /finance/expenses` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`, `DRIVER`
 - `POST /finance/expenses` - `ADMIN`, `FLEET_MANAGER`, `DRIVER`
 - `GET /dashboard/kpis` - any authenticated role
+- `GET /analytics/overview` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`
 - `GET /analytics/reports/fuel-efficiency` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`
 - `GET /analytics/reports/fleet-utilization` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`
 - `GET /analytics/reports/operational-cost` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`
@@ -865,6 +866,60 @@ Query param: `vehicleId`
 ### `GET /analytics/reports/operational-cost`
 
 Query param: `vehicleId`
+
+### `GET /analytics/overview`
+
+Query param: `vehicleId`
+
+Success `200`:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": {
+    "fuelEfficiency": [
+      {
+        "vehicleId": "uuid",
+        "distanceKm": 1200,
+        "fuelLiters": 142.5,
+        "kmPerLiter": 8.42
+      }
+    ],
+    "fleetUtilization": {
+      "activeVehicles": 8,
+      "totalEligibleVehicles": 10,
+      "utilizationPercent": 80
+    },
+    "operationalCost": {
+      "vehicleId": null,
+      "fuelCost": 18000,
+      "maintenanceCost": 12000,
+      "expensesCost": 4070,
+      "totalOperationalCost": 34070
+    },
+    "vehicleROI": null,
+    "totalFuelLiters": 142.5,
+    "monthlyTrend": [
+      {
+        "month": "2026-07",
+        "fuelCost": 18000,
+        "maintenanceCost": 12000,
+        "expenseCost": 4070,
+        "totalCost": 34070
+      }
+    ],
+    "topCostlyVehicles": [
+      {
+        "vehicleId": "uuid",
+        "registrationNumber": "TRUCK-11",
+        "name": "Truck 11",
+        "totalCost": 18000
+      }
+    ]
+  }
+}
+```
 
 ## Enums
 
