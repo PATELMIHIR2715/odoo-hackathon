@@ -21,9 +21,9 @@
     "zod": "^4.4.3"
   },
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "node dist/index.js",
     "db:seed": "tsx prisma/seed.ts"
   },
   "devDependencies": {

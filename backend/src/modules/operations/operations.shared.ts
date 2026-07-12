@@ -1,6 +1,7 @@
 import { DriverStatus, Prisma, Role, TripStatus, VehicleStatus } from '@prisma/client';
 import { z } from 'zod';
 import { ApiError } from '../../utils/ApiError.js';
+import { successResponse } from '../../lib/response.js';
 
 export const allRoles = Object.values(Role);
 
@@ -36,7 +37,7 @@ export const tripInputSchema = z.object({
 });
 
 export function sendJson(res: { status: (code: number) => { json: (body: unknown) => unknown } }, data: unknown, status = 200) {
-  return res.status(status).json({ data });
+  return successResponse(res as never, data, status);
 }
 
 export function parseUuid(value: unknown) {

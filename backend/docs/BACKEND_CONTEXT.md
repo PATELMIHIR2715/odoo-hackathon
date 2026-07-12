@@ -8,6 +8,8 @@ This document is the source of context for future contributors and coding agents
 - PostgreSQL may be hosted by Supabase, but **Supabase Auth is not used**. The `@supabase/supabase-js` package/config is legacy scaffolding and is not part of the active request path.
 - Keep the existing source layout: `config`, `constants`, `lib`, `middlewares`, `modules`, `types`, and `utils`. Do not replace it with the folder layout from the original planning document.
 - The current feature routes are split across feature files inside `src/modules/operations/` and are re-exported through `src/modules/operations/operations.routes.ts`. If splitting it further later, retain the public URL and authorization contracts below.
+- The application now boots from `src/index.ts` instead of separate `app.ts` and `server.ts` files.
+- The frontend-facing route contract is maintained in `docs/route-doc.md`; update it whenever request or response shapes change.
 
 ## Delivery phases
 
@@ -16,7 +18,7 @@ This document is the source of context for future contributors and coding agents
 | 1 | Project foundation, Prisma schema, global Express middleware | Complete |
 | 2 | Custom JWT access/refresh authentication, password lifecycle, and controlled admin bootstrap | Complete |
 | 3 | Fleet resources and transactional trip/maintenance workflows | Complete |
-| 4 | API smoke tests, route-module split, and frontend integration contract | In progress - route split started, frontend contract added |
+| 4 | API smoke tests, route-module split, and frontend integration contract | In progress - route split and shared response helpers started |
 | 5 | Optional reports/export, seed demo data, and deployment hardening | Pending |
 
 When a phase changes state, update this table and the relevant sections below in the same change.
@@ -27,6 +29,8 @@ When a phase changes state, update this table and the relevant sections below in
 - Password-reset tokens are random, hash-only in the database, single-use, and expire after 15 minutes.
 - New migration: `20260712100000_password_reset`.
 - Operations routes were split into feature modules for vehicles, drivers, trips, maintenance, and finance while keeping the existing `/api/v1` URLs unchanged.
+- Auth routes now use rate limiting on registration, login, refresh, forgot-password, and reset-password endpoints.
+- All success responses now go through a shared helper and all errors use the shared error envelope.
 
 ## Authentication
 
@@ -98,7 +102,7 @@ All business endpoints are prefixed with `/api/v1` and require a valid access to
 
 Responses use `{ "data": ... }` for success and `{ "error": { "code", "message" } }` for failures. Zod validation failures additionally include `details`.
 
-The frontend-ready request/response contract is maintained in [API_CONTRACT.md](API_CONTRACT.md). Update it whenever a route, authorization rule, input, output, or enum changes.
+The frontend-ready request/response contract is maintained in [route-doc.md](route-doc.md). Update it whenever a route, authorization rule, input, output, or enum changes.
 
 ## Critical workflow rules
 
