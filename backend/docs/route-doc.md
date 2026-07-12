@@ -677,16 +677,16 @@ Success `200`: closed maintenance record.
 
 Authorization varies by route:
 
-- `GET /fuel-logs` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`, `DRIVER`
-- `POST /fuel-logs` - `ADMIN`, `FLEET_MANAGER`, `DRIVER`
-- `GET /expenses` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`, `DRIVER`
-- `POST /expenses` - `ADMIN`, `FLEET_MANAGER`, `DRIVER`
+- `GET /finance/fuel-logs` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`, `DRIVER`
+- `POST /finance/fuel-logs` - `ADMIN`, `FLEET_MANAGER`, `DRIVER`
+- `GET /finance/expenses` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`, `DRIVER`
+- `POST /finance/expenses` - `ADMIN`, `FLEET_MANAGER`, `DRIVER`
 - `GET /dashboard/kpis` - any authenticated role
-- `GET /reports/fuel-efficiency` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`
-- `GET /reports/fleet-utilization` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`
-- `GET /reports/operational-cost` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`
+- `GET /analytics/reports/fuel-efficiency` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`
+- `GET /analytics/reports/fleet-utilization` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`
+- `GET /analytics/reports/operational-cost` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`
 
-### `POST /fuel-logs`
+### `POST /finance/fuel-logs`
 
 Body:
 
@@ -702,6 +702,7 @@ Body:
 `GET /fuel-logs` accepts `vehicleId`, `page`, and `pageSize`, and returns the standard paginated list shape.
 
 ### `POST /expenses`
+### `POST /finance/expenses`
 
 Body:
 
@@ -721,13 +722,13 @@ Body:
 
 Success `200`: KPI object.
 
-### `GET /reports/fuel-efficiency`
+### `GET /analytics/reports/fuel-efficiency`
 
 Query param: `vehicleId`
 
-### `GET /reports/fleet-utilization`
+### `GET /analytics/reports/fleet-utilization`
 
-### `GET /reports/operational-cost`
+### `GET /analytics/reports/operational-cost`
 
 Query param: `vehicleId`
 
