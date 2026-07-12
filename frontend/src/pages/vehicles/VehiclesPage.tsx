@@ -590,15 +590,7 @@ export function VehiclesPage() {
               </div>
             )}
           </div>
-        )}
-
-        {/* Footer Info/Rule */}
-        <div className="flex items-center gap-2 border-t border-border/80 bg-muted/10 px-6 py-3 text-xs text-amber-600 dark:text-amber-400 font-medium">
-          <Info size={14} className="shrink-0" />
-          <span>
-            Rule: Registration No. must be unique • Retired/In Shop vehicles are hidden from Trip Dispatcher
-          </span>
-        </div>
+        )}          
       </div>
 
       {/* ==================== ADD VEHICLE DIALOG ==================== */}
