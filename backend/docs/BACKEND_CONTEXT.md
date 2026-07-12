@@ -18,7 +18,7 @@ This document is the source of context for future contributors and coding agents
 - Domain features must live in their own top-level module folders, such as `src/modules/vehicle`, `src/modules/driver`, `src/modules/trip`, `src/modules/maintenance`, `src/modules/finance`, `src/modules/analytics`, and `src/modules/dashboard`. Do not group them under a shared `operations` feature folder.
 - The settings area now has two admin-only surfaces: organization details (`/settings/org`) and RBAC (`/settings/rbac`).
 - The backend response envelope is standardized through `src/lib/response.ts`. Success responses use `{ success: true, message, data }`; shared errors use the standard `{ error, code? , field? }` envelope.
-- In development, shared error responses may include Prisma `meta` details and raw validation messages for easier debugging. Production should keep the same structure but avoid leaking internal details.
+- In development, shared error responses may include Prisma `meta` details, raw Prisma validation text, and explicit service-layer messages for easier debugging. Production should keep the same structure but avoid leaking internal details.
 - New modules must be created with `routes`, `controller`, `service`, and `validation` files. Route files should stay thin and only wire middleware plus controller handlers.
 
 ## Delivery phases
@@ -44,6 +44,8 @@ When a phase changes state, update this table and the relevant sections below in
 - Auth routes now use rate limiting on registration, login, refresh, forgot-password, and reset-password endpoints.
 - All success responses now go through a shared helper and all errors use the shared error envelope.
 - Development error responses now preserve meaningful Prisma and service-layer details instead of collapsing everything into a generic internal error.
+- List endpoints for vehicles, drivers, trips, maintenance, fuel logs, and expenses now return paginated `{ items, pagination }` payloads.
+- Vehicle, driver, and trip lists support search and filters that match the dispatcher/fleet screens.
 - Smoke tests now cover health, not-found, and validation-error envelopes using the exported app.
 - RBAC now uses module access arrays, route guards, and a settings RBAC module.
 

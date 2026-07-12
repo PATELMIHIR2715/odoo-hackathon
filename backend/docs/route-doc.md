@@ -389,6 +389,24 @@ Success `200`:
 }
 ```
 
+Paginated list responses use the standard shape:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": {
+    "items": [],
+    "pagination": {
+      "page": 1,
+      "pageSize": 10,
+      "total": 0,
+      "totalPages": 0
+    }
+  }
+}
+```
+
 The actual response payload includes pagination metadata:
 
 ```json
@@ -530,6 +548,24 @@ Success `200`:
 }
 ```
 
+Paginated list responses use the standard shape:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": {
+    "items": [],
+    "pagination": {
+      "page": 1,
+      "pageSize": 10,
+      "total": 0,
+      "totalPages": 0
+    }
+  }
+}
+```
+
 ### `GET /drivers/available`
 
 Success `200`: same response shape as `GET /drivers`, filtered to `AVAILABLE` drivers with a valid license.
@@ -606,7 +642,29 @@ Authorization: any authenticated role for reads, `ADMIN` or `DRIVER` for writes.
 
 ### `GET /trips`
 
-Query params: `status`, `driverId`, `vehicleId`
+Query params: `search`, `status`, `driverId`, `vehicleId`, `page`, `pageSize`, `sortBy`, `sortOrder`
+
+Success `200`:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": {
+    "items": [],
+    "pagination": {
+      "page": 1,
+      "pageSize": 10,
+      "total": 0,
+      "totalPages": 0
+    }
+  }
+}
+```
+
+### `GET /trips/board`
+
+Success `200`: dashboard-style trip board payload with recent trips, status counts, and available resource counts.
 
 ### `GET /trips/:id`
 
@@ -657,6 +715,24 @@ Authorization: `ADMIN` or `FLEET_MANAGER`.
 
 Query params: `vehicleId`, `status`, `page`, `pageSize`
 
+Success `200`:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": {
+    "items": [],
+    "pagination": {
+      "page": 1,
+      "pageSize": 10,
+      "total": 0,
+      "totalPages": 0
+    }
+  }
+}
+```
+
 ### `POST /maintenance`
 
 Body:
@@ -699,6 +775,26 @@ Body:
 }
 ```
 
+Query params for `GET /finance/fuel-logs`: `vehicleId`, `page`, `pageSize`
+
+Success `200`:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": {
+    "items": [],
+    "pagination": {
+      "page": 1,
+      "pageSize": 10,
+      "total": 0,
+      "totalPages": 0
+    }
+  }
+}
+```
+
 `GET /fuel-logs` accepts `vehicleId`, `page`, and `pageSize`, and returns the standard paginated list shape.
 
 ### `POST /expenses`
@@ -716,7 +812,25 @@ Body:
 }
 ```
 
-`GET /expenses` accepts `vehicleId`, `type`, `page`, and `pageSize`, and returns the standard paginated list shape.
+Query params for `GET /finance/expenses`: `vehicleId`, `type`, `page`, `pageSize`
+
+Success `200`:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": {
+    "items": [],
+    "pagination": {
+      "page": 1,
+      "pageSize": 10,
+      "total": 0,
+      "totalPages": 0
+    }
+  }
+}
+```
 
 ### `GET /dashboard/kpis`
 
