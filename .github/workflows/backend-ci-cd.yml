@@ -6,11 +6,17 @@ on:
       - main
       - master
       - development
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-ci-cd.yml"
   pull_request:
     branches:
       - main
       - master
       - development
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-ci-cd.yml"
 
 concurrency:
   group: backend-${{ github.ref }}
