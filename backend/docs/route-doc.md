@@ -298,15 +298,57 @@ Authorization: any authenticated role for reads, `ADMIN` or `FLEET_MANAGER` for 
 
 Query params: `status`, `type`, `region`
 
-Success `200`: array of vehicles.
+Success `200`:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": [
+    {
+      "id": "uuid",
+      "registrationNumber": "ABC-1234",
+      "name": "Truck 1",
+      "type": "TRUCK",
+      "status": "AVAILABLE",
+      "maxLoadCapacityKg": 8000,
+      "odometerKm": 12000,
+      "acquisitionCost": 4500000,
+      "region": "Western",
+      "createdAt": "2026-07-12T10:00:00.000Z",
+      "updatedAt": "2026-07-12T10:00:00.000Z"
+    }
+  ]
+}
+```
 
 ### `GET /vehicles/available`
 
-Success `200`: array of available vehicles.
+Success `200`: same response shape as `GET /vehicles`, filtered to `AVAILABLE` vehicles.
 
 ### `GET /vehicles/:id`
 
-Success `200`: one vehicle object.
+Success `200`:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": {
+    "id": "uuid",
+    "registrationNumber": "ABC-1234",
+    "name": "Truck 1",
+    "type": "TRUCK",
+    "status": "AVAILABLE",
+    "maxLoadCapacityKg": 8000,
+    "odometerKm": 12000,
+    "acquisitionCost": 4500000,
+    "region": "Western",
+    "createdAt": "2026-07-12T10:00:00.000Z",
+    "updatedAt": "2026-07-12T10:00:00.000Z"
+  }
+}
+```
 
 ### `POST /vehicles`
 
@@ -324,19 +366,39 @@ Body:
 }
 ```
 
-Success `201`: created vehicle.
+Success `201`:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": {
+    "id": "uuid",
+    "registrationNumber": "ABC-1234",
+    "name": "Truck 1",
+    "type": "TRUCK",
+    "status": "AVAILABLE",
+    "maxLoadCapacityKg": 8000,
+    "odometerKm": 12000,
+    "acquisitionCost": 4500000,
+    "region": "Western",
+    "createdAt": "2026-07-12T10:00:00.000Z",
+    "updatedAt": "2026-07-12T10:00:00.000Z"
+  }
+}
+```
 
 ### `PATCH /vehicles/:id`
 
 Body: any subset of the create fields.
 
-Success `200`: updated vehicle.
+Success `200`: same shape as `POST /vehicles`.
 
 ### `DELETE /vehicles/:id`
 
 Soft retires the vehicle by setting `status` to `RETIRED`.
 
-Success `200`: updated vehicle.
+Success `200`: same shape as `PATCH /vehicles/:id`.
 
 ### `GET /vehicles/:id/total-cost`
 
@@ -362,9 +424,55 @@ Authorization: any authenticated role for reads, `ADMIN` or `SAFETY_OFFICER` for
 
 Query params: `status`
 
+Success `200`:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": [
+    {
+      "id": "uuid",
+      "name": "Kamal Perera",
+      "licenseNumber": "B1234567",
+      "licenseCategory": "Heavy",
+      "licenseExpiryDate": "2030-12-31T00:00:00.000Z",
+      "contactNumber": "0771234567",
+      "safetyScore": 98,
+      "status": "AVAILABLE",
+      "createdAt": "2026-07-12T10:00:00.000Z",
+      "updatedAt": "2026-07-12T10:00:00.000Z"
+    }
+  ]
+}
+```
+
 ### `GET /drivers/available`
 
+Success `200`: same response shape as `GET /drivers`, filtered to `AVAILABLE` drivers with a valid license.
+
 ### `GET /drivers/:id`
+
+Success `200`:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": {
+    "id": "uuid",
+    "name": "Kamal Perera",
+    "licenseNumber": "B1234567",
+    "licenseCategory": "Heavy",
+    "licenseExpiryDate": "2030-12-31T00:00:00.000Z",
+    "contactNumber": "0771234567",
+    "safetyScore": 98,
+    "status": "AVAILABLE",
+    "createdAt": "2026-07-12T10:00:00.000Z",
+    "updatedAt": "2026-07-12T10:00:00.000Z"
+  }
+}
+```
 
 ### `POST /drivers`
 
@@ -382,9 +490,32 @@ Body:
 }
 ```
 
+Success `201`:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": {
+    "id": "uuid",
+    "name": "Kamal Perera",
+    "licenseNumber": "B1234567",
+    "licenseCategory": "Heavy",
+    "licenseExpiryDate": "2030-12-31T00:00:00.000Z",
+    "contactNumber": "0771234567",
+    "safetyScore": 98,
+    "status": "AVAILABLE",
+    "createdAt": "2026-07-12T10:00:00.000Z",
+    "updatedAt": "2026-07-12T10:00:00.000Z"
+  }
+}
+```
+
 ### `PATCH /drivers/:id`
 
 Body: any subset of the create fields.
+
+Success `200`: same shape as `POST /drivers`.
 
 ## Trip Routes
 

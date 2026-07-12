@@ -46,7 +46,9 @@ export const analyticsService = {
     return {
       activeVehicles: active,
       totalEligibleVehicles: total,
-      utilizationPercent: total ? Number(((active / total) * 100).toFixed(2)) : 0,
+      utilizationPercent: total
+        ? Number(((active / total) * 100).toFixed(2))
+        : 0,
     };
   },
 

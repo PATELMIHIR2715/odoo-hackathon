@@ -1,9 +1,9 @@
 import {
   PrismaClientKnownRequestError,
   PrismaClientValidationError,
-} from '@prisma/client/runtime/client';
-import type { Response } from 'express';
-import { ZodError } from 'zod';
+} from "@prisma/client/runtime/client";
+import type { Response } from "express";
+import { ZodError } from "zod";
 import {
   ALREADY_EXISTS,
   DATABASE_ERROR,
@@ -18,8 +18,8 @@ import {
   SUCCESS,
   UNAUTHORIZED,
   VALIDATION_ERROR,
-} from '../constants/messages.js';
-import { ApiError } from '../utils/ApiError.js';
+} from "../constants/messages.js";
+import { ApiError } from "../utils/ApiError.js";
 
 export const successResponse = (
   res: Response,
@@ -28,9 +28,9 @@ export const successResponse = (
   statusCode: number = 200,
 ) => {
   const message =
-    typeof messageOrStatusCode === 'number' ? SUCCESS : messageOrStatusCode;
+    typeof messageOrStatusCode === "number" ? SUCCESS : messageOrStatusCode;
   const responseStatusCode =
-    typeof messageOrStatusCode === 'number' ? messageOrStatusCode : statusCode;
+    typeof messageOrStatusCode === "number" ? messageOrStatusCode : statusCode;
 
   return res.status(responseStatusCode).json({
     success: true,
@@ -50,7 +50,11 @@ const mappedStatusCodes: Record<string, number> = {
   [INVALID_FIELD]: 400,
 };
 
-export const errorResponseStandard = (error: unknown, res: Response, statusCode = 400) => {
+export const errorResponseStandard = (
+  error: unknown,
+  res: Response,
+  statusCode = 400,
+) => {
   if (error instanceof ZodError && error.issues.length > 0) {
     return res.status(400).json({
       success: false,

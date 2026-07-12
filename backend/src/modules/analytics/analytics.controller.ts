@@ -6,7 +6,9 @@ import { analyticsQuerySchema } from "./analytics.validation.js";
 export const getFuelEfficiencyReport: RequestHandler = async (req, res) => {
   return successResponse(
     res,
-    await analyticsService.fuelEfficiency(analyticsQuerySchema.parse(req.query)),
+    await analyticsService.fuelEfficiency(
+      analyticsQuerySchema.parse(req.query),
+    ),
   );
 };
 
@@ -17,6 +19,8 @@ export const getFleetUtilizationReport: RequestHandler = async (_req, res) => {
 export const getOperationalCostReport: RequestHandler = async (req, res) => {
   return successResponse(
     res,
-    await analyticsService.operationalCost(analyticsQuerySchema.parse(req.query)),
+    await analyticsService.operationalCost(
+      analyticsQuerySchema.parse(req.query),
+    ),
   );
 };

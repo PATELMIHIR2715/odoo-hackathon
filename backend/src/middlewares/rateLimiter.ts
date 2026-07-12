@@ -1,4 +1,4 @@
-import rateLimit from 'express-rate-limit';
+import rateLimit from "express-rate-limit";
 
 const commonOptions = {
   standardHeaders: true,
@@ -11,8 +11,8 @@ export const authPublicLimiter = rateLimit({
   limit: 20,
   message: {
     error: {
-      code: 'TOO_MANY_REQUESTS',
-      message: 'Too many authentication requests. Please try again later.',
+      code: "TOO_MANY_REQUESTS",
+      message: "Too many authentication requests. Please try again later.",
     },
   },
 });
@@ -23,8 +23,8 @@ export const authSensitiveLimiter = rateLimit({
   limit: 5,
   message: {
     error: {
-      code: 'TOO_MANY_REQUESTS',
-      message: 'Too many password or token requests. Please try again later.',
+      code: "TOO_MANY_REQUESTS",
+      message: "Too many password or token requests. Please try again later.",
     },
   },
 });
