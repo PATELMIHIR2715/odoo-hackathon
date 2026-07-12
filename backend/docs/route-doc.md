@@ -22,6 +22,8 @@ All errors use:
 }
 ```
 
+In development, Prisma known-request errors may also include a `meta` object, and Prisma validation errors may include the original validation message for easier debugging. Production responses keep the same structured error envelope but omit extra internal details.
+
 Validation errors return:
 
 ```json
@@ -38,6 +40,22 @@ Validation errors return:
 The response examples below show the `data` payload content for readability. The actual HTTP response always includes the `success` and `message` fields around that payload, as shown above.
 
 Auth payloads also include `moduleAccess`, an array of module names such as `dashboard`, `fleet`, `drivers`, `trips`, `maintenance`, `fuel_expenses`, `analytics`, and `settings`.
+
+List endpoints that support pagination return:
+
+```json
+{
+  "data": {
+    "items": [],
+    "pagination": {
+      "page": 1,
+      "pageSize": 10,
+      "total": 0,
+      "totalPages": 0
+    }
+  }
+}
+```
 
 ## Auth Routes
 
@@ -345,7 +363,7 @@ Authorization: any authenticated role for reads, `ADMIN` or `FLEET_MANAGER` for 
 
 ### `GET /vehicles`
 
-Query params: `status`, `type`, `region`
+Query params: `search`, `status`, `type`, `region`, `page`, `pageSize`
 
 Success `200`:
 
@@ -368,6 +386,22 @@ Success `200`:
       "updatedAt": "2026-07-12T10:00:00.000Z"
     }
   ]
+}
+```
+
+The actual response payload includes pagination metadata:
+
+```json
+{
+  "data": {
+    "items": [],
+    "pagination": {
+      "page": 1,
+      "pageSize": 10,
+      "total": 0,
+      "totalPages": 0
+    }
+  }
 }
 ```
 
@@ -471,7 +505,7 @@ Authorization: any authenticated role for reads, `ADMIN` or `SAFETY_OFFICER` for
 
 ### `GET /drivers`
 
-Query params: `status`
+Query params: `search`, `status`, `page`, `pageSize`
 
 Success `200`:
 
@@ -621,7 +655,7 @@ Authorization: `ADMIN` or `FLEET_MANAGER`.
 
 ### `GET /maintenance`
 
-Query params: `vehicleId`, `status`
+Query params: `vehicleId`, `status`, `page`, `pageSize`
 
 ### `POST /maintenance`
 
@@ -665,6 +699,9 @@ Body:
 }
 ```
 
+`GET /fuel-logs` accepts `vehicleId`, `page`, and `pageSize`, and returns the standard paginated list shape.
+
+### `POST /expenses`
 ### `POST /finance/expenses`
 
 Body:
@@ -678,6 +715,8 @@ Body:
   "date": "2026-07-12T00:00:00.000Z"
 }
 ```
+
+`GET /expenses` accepts `vehicleId`, `type`, `page`, and `pageSize`, and returns the standard paginated list shape.
 
 ### `GET /dashboard/kpis`
 
