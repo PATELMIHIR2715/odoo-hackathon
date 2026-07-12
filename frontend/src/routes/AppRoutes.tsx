@@ -5,6 +5,7 @@ import { ProtectedRoute } from "@/routes/ProtectedRoute"
 import { DashboardPage } from "@/pages/dashboard/DashboardPage"
 import { VehiclesPage } from "@/pages/vehicles/VehiclesPage"
 import { DriversPage } from "@/pages/drivers/DriversPage"
+import { TripsPage } from "@/pages/trips/TripsPage"
 import { LoginPage } from "@/pages/auth/LoginPage"
 import { useAuthStore } from "@/store/auth.store"
 
@@ -27,6 +28,7 @@ export function AppRoutes() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/fleet" element={<VehiclesPage />} />
           <Route path="/drivers" element={<DriversPage />} />
+          <Route path="/trips" element={<TripsPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} />
