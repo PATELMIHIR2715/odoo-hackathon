@@ -13,6 +13,8 @@ export const listDriversQuerySchema = z.object({
     (value) => (typeof value === "string" ? value.trim().toUpperCase() : value),
     z.nativeEnum(DriverStatus),
   ).optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(10),
 });
 
 export const driverInputSchema = z.object({
