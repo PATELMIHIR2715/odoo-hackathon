@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -140,7 +140,7 @@ export function FuelExpensesPage() {
   })
 
   // Load lists
-  const fetchData = async () => {
+  const fetchData = useCallback(async () => {
     setLoading(true)
     try {
       // 1. Fetch paginated logs based on current page
@@ -164,10 +164,10 @@ export function FuelExpensesPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [activeTab, pageFilter])
 
   // Load vehicles excluding retired ones for log options
-  const fetchVehiclesOptions = async () => {
+  const fetchVehiclesOptions = useCallback(async () => {
     setLoadingOptions(true)
     try {
       const response = await getVehiclesService({ pageSize: 100 })
@@ -175,22 +175,22 @@ export function FuelExpensesPage() {
         const activeVehicles = response.data.items.filter((v) => v.status !== "RETIRED")
         setVehiclesOptions(activeVehicles)
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to fetch vehicles list options")
     } finally {
       setLoadingOptions(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
-    fetchData()
-  }, [activeTab, pageFilter])
+    void fetchData()
+  }, [fetchData])
 
   useEffect(() => {
     if (isFuelOpen || isExpenseOpen) {
-      fetchVehiclesOptions()
+      void fetchVehiclesOptions()
     }
-  }, [isFuelOpen, isExpenseOpen])
+  }, [fetchVehiclesOptions, isFuelOpen, isExpenseOpen])
 
   // Reset page parameter on Tab changes
   const handleTabChange = (tab: "summary" | "fuel" | "expenses") => {

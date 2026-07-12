@@ -30,6 +30,13 @@ FleetOS is designed to look modern, clean, and highly premium in both light and 
   - **Red / Rose**: `RETIRED` (vehicles), `CANCELLED` (trips), `EXPIRED` (license warning).
   - **Grey**: `OFF_DUTY` (drivers), `DRAFT` (trips).
 - **Table Design**: Condensed space layout with tracking-wider, semibold uppercase headings, alternating row layouts, and subtle borders (`border-border/80`).
+- **Recharts Custom Tooltips**: Standard chart tooltip cards render custom markup styled with Tailwind `bg-card/95`, `border-border/80`, and `backdrop-blur-sm` wrappers, providing 100% theme compatibility (light/dark mode) and color-coded keys representing dataset series.
+- **Header Layout & Controls**: Replaced basic header with an elevated layout containing:
+  - Circle profile initials avatar.
+  - User name, email details, and role badges.
+  - Dark/Light theme toggle switcher.
+  - Styled logout button.
+- **Brand Logo & Sidebar Styling**: Includes a modern geometric layered SVG control icon styled with a vibrant gradient overlay (`bg-gradient-to-tr from-primary to-purple-500` with soft drop shadows) coupled with brand name "FleetOS" utilizing gradient text overlays.
 
 ---
 
@@ -73,6 +80,15 @@ FleetOS is designed to look modern, clean, and highly premium in both light and 
   - **Other Expenses table** links trip logs and lists tolls, maintenance, and other expenses logged for the vehicles.
   - **Total Operational Cost box** aggregates and sums fuel and maintenance costs dynamically at the bottom.
   - Log dialogs allow logging refueling entries and custom expenses.
+
+### F. Analytics Overview Module (`/analytics`)
+- **Types**: `src/types/analytics.ts`
+- **API/Services**: `src/api/analytics.api.ts` & `src/services/analytics.service.ts`
+- **UI Component**: `src/pages/analytics/AnalyticsPage.tsx`
+- **Features**:
+  - Top row analytics metric cards tracking Fuel Efficiency (avg km/L), Utilization percent, operational cost sums, and Vehicle ROI metrics.
+  - Stacked bar charts built using **Recharts** detailing month-over-month operating costs (Refueling, Maintenance, and Toll/Misc Expenses).
+  - Top Costliest Vehicles list with custom progress indicator tracks reflecting the relative cost margins per vehicle.
 
 ---
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -134,7 +134,7 @@ export function DriversPage() {
   })
 
   // Fetch drivers based on search filters
-  const fetchDrivers = async () => {
+  const fetchDrivers = useCallback(async () => {
     setLoading(true)
     try {
       const params: { search?: string; page?: number; pageSize?: number } = {
@@ -155,11 +155,11 @@ export function DriversPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [pageFilter, searchFilter])
 
   useEffect(() => {
-    fetchDrivers()
-  }, [searchFilter, pageFilter])
+    void fetchDrivers()
+  }, [fetchDrivers])
 
   // Search handler updating URL Search Params
   const handleSearchChange = (value: string) => {
