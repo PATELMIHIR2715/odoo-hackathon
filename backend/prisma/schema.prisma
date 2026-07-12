@@ -26,6 +26,17 @@ enum VehicleStatus {
   RETIRED
 }
 
+enum VehicleType {
+  VAN
+  TRUCK
+  MINI
+  CAR
+  BUS
+  SUV
+  PICKUP
+  OTHER
+}
+
 enum DriverStatus {
   AVAILABLE
   ON_TRIP
@@ -77,7 +88,7 @@ model Vehicle {
   id                 String        @id @default(uuid())
   registrationNumber String        @unique
   name               String
-  type               String
+  type               VehicleType
   maxLoadCapacityKg  Float
   odometerKm         Float         @default(0)
   acquisitionCost    Float
