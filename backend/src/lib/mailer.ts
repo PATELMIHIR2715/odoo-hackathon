@@ -1,6 +1,7 @@
 import dns from "node:dns";
 import nodemailer from "nodemailer";
 import { env } from "../config/env.js";
+import { ApiError } from "../utils/ApiError.js";
 
 dns.setDefaultResultOrder("ipv4first");
 
@@ -37,7 +38,9 @@ export default transporter;
 export const sendPasswordResetEmail = async (to: string, resetToken: string) => {
   if (!transporter || !smtpConfig) {
     if (env.NODE_ENV === "production") {
-      throw new Error(
+      throw new ApiError(
+        500,
+        "SMTP_NOT_CONFIGURED",
         "SMTP configuration is required to send password reset emails",
       );
     }
@@ -72,7 +75,9 @@ export const sendPasswordResetEmail = async (to: string, resetToken: string) => 
     if (env.NODE_ENV !== "production") {
       console.error("Password reset email failed:", error);
     }
-    throw new Error(
+    throw new ApiError(
+      502,
+      "SMTP_SEND_FAILED",
       `Failed to send password reset email: ${(error as Error).message}`,
     );
   }

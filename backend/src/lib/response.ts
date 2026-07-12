@@ -4,6 +4,7 @@ import {
 } from "@prisma/client/runtime/client";
 import type { Response } from "express";
 import { ZodError } from "zod";
+import { env } from "../config/env.js";
 import {
   ALREADY_EXISTS,
   DATABASE_ERROR,
@@ -83,6 +84,7 @@ export const errorResponseStandard = (
       success: false,
       error: prismaMessages[error.code] || DATABASE_ERROR,
       code: error.code,
+      ...(env.NODE_ENV !== "production" ? { meta: error.meta } : {}),
     });
   }
 
@@ -90,13 +92,18 @@ export const errorResponseStandard = (
     return res.status(400).json({
       success: false,
       error: INVALID_DATABASE_DATA,
+      ...(env.NODE_ENV !== "production"
+        ? { message: error.message }
+        : {}),
     });
   }
 
   if (error instanceof ApiError) {
     const responseStatus = mappedStatusCodes[error.code] ?? error.status;
     const responseMessage =
-      responseStatus >= 500 ? INTERNAL_SERVER_ERROR : error.message;
+      responseStatus >= 500 && env.NODE_ENV === "production"
+        ? INTERNAL_SERVER_ERROR
+        : error.message;
 
     return res.status(responseStatus).json({
       success: false,
@@ -108,10 +115,15 @@ export const errorResponseStandard = (
   const message = (error as Error)?.message ?? INTERNAL_SERVER_ERROR;
   const responseStatus = mappedStatusCodes[message] ?? statusCode;
   const responseMessage =
-    responseStatus >= 500 ? INTERNAL_SERVER_ERROR : message;
+    responseStatus >= 500 && env.NODE_ENV === "production"
+      ? INTERNAL_SERVER_ERROR
+      : message;
 
   return res.status(responseStatus).json({
     success: false,
     error: responseMessage,
+    ...(responseStatus >= 500 && env.NODE_ENV !== "production"
+      ? { code: "UNHANDLED_ERROR" }
+      : {}),
   });
 };
