@@ -53,6 +53,7 @@ When a phase changes state, update this table and the relevant sections below in
 - Analytics adds a `/analytics/reports/monthly-trend` endpoint for the cost trend chart.
 - Smoke tests now cover health, not-found, and validation-error envelopes using the exported app.
 - RBAC now uses module access arrays, route guards, and a settings RBAC module.
+- The frontend settings screen now consumes `/settings/org` and `/settings/rbac` for organization details and module-wise access control editing.
 
 ## Authentication
 
