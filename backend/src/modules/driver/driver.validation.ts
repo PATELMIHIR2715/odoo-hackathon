@@ -1,0 +1,28 @@
+import { DriverStatus } from "@prisma/client";
+import { z } from "zod";
+
+export const driverIdParamSchema = z.object({
+  id: z.string().uuid(),
+});
+
+export const driverStatusSchema = z.nativeEnum(DriverStatus);
+
+export const listDriversQuerySchema = z.object({
+  search: z.string().trim().min(1).optional(),
+  status: z.preprocess(
+    (value) => (typeof value === "string" ? value.trim().toUpperCase() : value),
+    z.nativeEnum(DriverStatus),
+  ).optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(10),
+});
+
+export const driverInputSchema = z.object({
+  name: z.string().min(2),
+  licenseNumber: z.string().min(2),
+  licenseCategory: z.string().min(1),
+  licenseExpiryDate: z.coerce.date(),
+  contactNumber: z.string().min(5),
+  safetyScore: z.coerce.number().min(0).max(100).optional(),
+  status: z.nativeEnum(DriverStatus).optional(),
+});

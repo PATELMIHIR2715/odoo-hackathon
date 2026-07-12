@@ -7,6 +7,7 @@ import { VehiclesPage } from "@/pages/vehicles/VehiclesPage"
 import { DriversPage } from "@/pages/drivers/DriversPage"
 import { TripsPage } from "@/pages/trips/TripsPage"
 import { MaintenancePage } from "@/pages/maintenance/MaintenancePage"
+import { SettingsPage } from "@/pages/settings/SettingsPage"
 import { FuelExpensesPage } from "@/pages/finance/FuelExpensesPage"
 import { AnalyticsPage } from "@/pages/analytics/AnalyticsPage"
 import { LoginPage } from "@/pages/auth/LoginPage"
@@ -33,6 +34,7 @@ export function AppRoutes() {
           <Route path="/drivers" element={<DriversPage />} />
           <Route path="/trips" element={<TripsPage />} />
           <Route path="/maintenance" element={<MaintenancePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
           <Route path="/fuel-expenses" element={<FuelExpensesPage />} />
           <Route path="/analytics" element={<AnalyticsPage />} />
         </Route>
