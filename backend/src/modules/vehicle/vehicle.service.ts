@@ -1,15 +1,23 @@
-import { Role, VehicleStatus } from "@prisma/client";
+import { Role, VehicleStatus, VehicleType } from "@prisma/client";
 import { prisma } from "../../config/prisma.js";
 import { ApiError } from "../../utils/ApiError.js";
 import { parseUuid } from "../shared/operations.shared.js";
-import { vehicleInputSchema, vehicleStatusSchema } from "./vehicle.validation.js";
+import {
+  vehicleInputSchema,
+  vehicleStatusSchema,
+  vehicleTypeSchema,
+} from "./vehicle.validation.js";
 import { randomUUID } from "node:crypto";
 
 export const vehiclesService = {
-  async listVehicles(query: { status?: string; type?: string; region?: string }) {
+  async listVehicles(query: {
+    status?: VehicleStatus;
+    type?: VehicleType;
+    region?: string;
+  }) {
     const where = {
       ...(query.status ? { status: vehicleStatusSchema.parse(query.status) } : {}),
-      ...(query.type ? { type: String(query.type) } : {}),
+      ...(query.type ? { type: vehicleTypeSchema.parse(query.type) } : {}),
       ...(query.region ? { region: String(query.region) } : {}),
     };
 

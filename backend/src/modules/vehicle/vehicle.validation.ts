@@ -1,4 +1,4 @@
-import { VehicleStatus } from "@prisma/client";
+import { VehicleStatus, VehicleType } from "@prisma/client";
 import { z } from "zod";
 
 export const vehicleIdParamSchema = z.object({
@@ -6,17 +6,27 @@ export const vehicleIdParamSchema = z.object({
 });
 
 export const vehicleStatusSchema = z.nativeEnum(VehicleStatus);
+export const vehicleTypeSchema = z.nativeEnum(VehicleType);
 
 export const listVehiclesQuerySchema = z.object({
-  status: z.string().optional(),
-  type: z.string().optional(),
+  status: z.preprocess(
+    (value) => (typeof value === "string" ? value.trim().toUpperCase() : value),
+    z.nativeEnum(VehicleStatus),
+  ).optional(),
+  type: z.preprocess(
+    (value) => (typeof value === "string" ? value.trim().toUpperCase() : value),
+    z.nativeEnum(VehicleType),
+  ).optional(),
   region: z.string().optional(),
 });
 
 export const vehicleInputSchema = z.object({
   registrationNumber: z.string().min(2),
   name: z.string().min(2),
-  type: z.string().min(2),
+  type: z.preprocess(
+    (value) => (typeof value === "string" ? value.trim().toUpperCase() : value),
+    z.nativeEnum(VehicleType),
+  ),
   vehicleCode: z.string().min(2).optional(),
   manufacturer: z.string().min(1).optional(),
   model: z.string().min(1).optional(),

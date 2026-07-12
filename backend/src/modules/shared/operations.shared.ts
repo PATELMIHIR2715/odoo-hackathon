@@ -4,6 +4,7 @@ import {
   Role,
   TripStatus,
   VehicleStatus,
+  VehicleType,
 } from "@prisma/client";
 import { z } from "zod";
 import { ApiError } from "../../utils/ApiError.js";
@@ -16,7 +17,10 @@ export const idSchema = z.string().uuid();
 export const vehicleInputSchema = z.object({
   registrationNumber: z.string().min(2),
   name: z.string().min(2),
-  type: z.string().min(2),
+  type: z.preprocess(
+    (value) => (typeof value === "string" ? value.trim().toUpperCase() : value),
+    z.nativeEnum(VehicleType),
+  ),
   maxLoadCapacityKg: z.coerce.number().positive(),
   odometerKm: z.coerce.number().min(0).optional(),
   acquisitionCost: z.coerce.number().min(0),
@@ -101,3 +105,4 @@ export async function assertVehicleAndDriverForTrip(
 
 export const tripStatusSchema = z.nativeEnum(TripStatus);
 export const vehicleStatusSchema = z.nativeEnum(VehicleStatus);
+export const vehicleTypeSchema = z.nativeEnum(VehicleType);
