@@ -6,7 +6,7 @@
 
 # Working Live URLS
 
-- Frontend — odoo-hackathon-beige-xi.vercel.app
+- Frontend — https://odoo-hackathon-beige-xi.vercel.app
 - Backend — https://odoo-hackathon-qryn.onrender.com
 
 # TransitOps
