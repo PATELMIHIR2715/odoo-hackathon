@@ -18,6 +18,8 @@ export const listVehiclesQuerySchema = z.object({
     z.nativeEnum(VehicleType),
   ).optional(),
   region: z.string().optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(10),
 });
 
 export const vehicleInputSchema = z.object({

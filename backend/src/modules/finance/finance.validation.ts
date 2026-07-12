@@ -1,12 +1,17 @@
 import { ExpenseType } from "@prisma/client";
 import { z } from "zod";
 
+export const expenseTypeSchema = z.nativeEnum(ExpenseType);
+
 export const financeQuerySchema = z.object({
   vehicleId: z.string().uuid().optional(),
-  type: z.string().optional(),
+  type: z.preprocess(
+    (value) => (typeof value === "string" ? value.trim().toUpperCase() : value),
+    expenseTypeSchema,
+  ).optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(10),
 });
-
-export const expenseTypeSchema = z.nativeEnum(ExpenseType);
 
 export const fuelLogCreateSchema = z.object({
   vehicleId: z.string().uuid(),
