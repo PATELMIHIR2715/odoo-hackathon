@@ -16,3 +16,15 @@ export interface ApiValidationErrorResponse extends ApiErrorResponse {
 }
 
 export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse | ApiValidationErrorResponse
+
+export interface PaginationMetadata {
+  page: number
+  pageSize: number
+  total: number
+  totalPages: number
+}
+
+export interface PaginatedListData<T> {
+  items: T[]
+  pagination: PaginationMetadata
+}

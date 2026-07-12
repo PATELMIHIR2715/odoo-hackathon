@@ -1,4 +1,4 @@
-import type { ApiResponse } from "@/types/api"
+import type { ApiResponse, PaginatedListData } from "@/types/api"
 
 export type VehicleType = "VAN" | "TRUCK" | "MINI" | "CAR" | "BUS" | "SUV" | "PICKUP" | "OTHER"
 
@@ -39,5 +39,5 @@ export interface UpdateVehiclePayload {
   region?: string
 }
 
-export type VehicleListResponse = ApiResponse<Vehicle[]>
+export type VehicleListResponse = ApiResponse<PaginatedListData<Vehicle>>
 export type VehicleResponse = ApiResponse<Vehicle>

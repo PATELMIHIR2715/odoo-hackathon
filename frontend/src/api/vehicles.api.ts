@@ -10,6 +10,8 @@ export async function getVehiclesRequest(params?: {
   type?: string
   status?: string
   search?: string
+  page?: number
+  pageSize?: number
 }): Promise<VehicleListResponse> {
   const response = await api.get<VehicleListResponse>("/vehicles", { params })
   return response.data

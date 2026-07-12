@@ -13,6 +13,8 @@ import {
   Eye,
   Loader2,
   Info,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -91,6 +93,12 @@ export function VehiclesPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [vehicles, setVehicles] = useState<Vehicle[]>([])
   const [loading, setLoading] = useState(true)
+  const [pagination, setPagination] = useState<{
+    page: number
+    pageSize: number
+    total: number
+    totalPages: number
+  } | null>(null)
 
   // Dialog States
   const [isAddOpen, setIsAddOpen] = useState(false)
@@ -107,6 +115,8 @@ export function VehiclesPage() {
   const typeFilter = searchParams.get("type") || "ALL"
   const statusFilter = searchParams.get("status") || "ALL"
   const searchFilter = searchParams.get("search") || ""
+  const pageFilter = Number(searchParams.get("page")) || 1
+  const pageSize = 10
 
   // React Hook Form for Add / Edit
   const {
@@ -132,14 +142,18 @@ export function VehiclesPage() {
   const fetchVehicles = async () => {
     setLoading(true)
     try {
-      const params: { type?: string; status?: string; search?: string } = {}
+      const params: { type?: string; status?: string; search?: string; page?: number; pageSize?: number } = {
+        page: pageFilter,
+        pageSize,
+      }
       if (typeFilter !== "ALL") params.type = typeFilter
       if (statusFilter !== "ALL") params.status = statusFilter
       if (searchFilter) params.search = searchFilter
 
       const response = await getVehiclesService(params)
       if (response.success) {
-        setVehicles(response.data)
+        setVehicles(response.data.items)
+        setPagination(response.data.pagination)
       } else {
         toast.error("Failed to load vehicles")
       }
@@ -152,11 +166,12 @@ export function VehiclesPage() {
 
   useEffect(() => {
     fetchVehicles()
-  }, [typeFilter, statusFilter, searchFilter])
+  }, [typeFilter, statusFilter, searchFilter, pageFilter])
 
   // Filter handlers updating URL Search Params
   const handleTypeChange = (value: string | null) => {
     setSearchParams((prev) => {
+      prev.delete("page")
       if (!value || value === "ALL") {
         prev.delete("type")
       } else {
@@ -168,6 +183,7 @@ export function VehiclesPage() {
 
   const handleStatusChange = (value: string | null) => {
     setSearchParams((prev) => {
+      prev.delete("page")
       if (!value || value === "ALL") {
         prev.delete("status")
       } else {
@@ -179,11 +195,19 @@ export function VehiclesPage() {
 
   const handleSearchChange = (value: string) => {
     setSearchParams((prev) => {
+      prev.delete("page")
       if (!value) {
         prev.delete("search")
       } else {
         prev.set("search", value)
       }
+      return prev
+    })
+  }
+
+  const handlePageChange = (newPage: number) => {
+    setSearchParams((prev) => {
+      prev.set("page", String(newPage))
       return prev
     })
   }
@@ -531,6 +555,42 @@ export function VehiclesPage() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Controls */}
+        {pagination && pagination.total > 0 && (
+          <div className="flex items-center justify-between border-t border-border/80 bg-muted/5 px-6 py-3.5 text-xs">
+            <span className="text-muted-foreground font-medium">
+              Showing {(pagination.page - 1) * pagination.pageSize + 1} -{" "}
+              {Math.min(pagination.page * pagination.pageSize, pagination.total)} of{" "}
+              {pagination.total} entries
+            </span>
+            {pagination.totalPages > 1 && (
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="icon-xs"
+                  className="rounded-lg hover:bg-muted"
+                  disabled={pagination.page <= 1}
+                  onClick={() => handlePageChange(pagination.page - 1)}
+                >
+                  <ChevronLeft size={14} />
+                </Button>
+                <span className="text-muted-foreground select-none font-medium px-1">
+                  Page {pagination.page} of {pagination.totalPages}
+                </span>
+                <Button
+                  variant="outline"
+                  size="icon-xs"
+                  className="rounded-lg hover:bg-muted"
+                  disabled={pagination.page >= pagination.totalPages}
+                  onClick={() => handlePageChange(pagination.page + 1)}
+                >
+                  <ChevronRight size={14} />
+                </Button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Footer Info/Rule */}
         <div className="flex items-center gap-2 border-t border-border/80 bg-muted/10 px-6 py-3 text-xs text-amber-600 dark:text-amber-400 font-medium">

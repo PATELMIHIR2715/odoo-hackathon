@@ -16,6 +16,8 @@ export async function getVehiclesService(params?: {
   type?: string
   status?: string
   search?: string
+  page?: number
+  pageSize?: number
 }): Promise<VehicleListResponse> {
   return getVehiclesRequest(params)
 }
