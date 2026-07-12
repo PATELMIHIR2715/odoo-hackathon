@@ -1,5 +1,15 @@
 import { useEffect, useMemo, useState, type ComponentType } from "react"
-import { BarChart3, Building2, ChevronRight, Loader2, Search, ShieldCheck, Truck, Users, X } from "lucide-react"
+import {
+  BarChart3,
+  Building2,
+  ChevronRight,
+  Loader2,
+  Search,
+  ShieldCheck,
+  Truck,
+  Users,
+  X,
+} from "lucide-react"
 
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -88,13 +98,20 @@ function DashboardMetricCard({
 }) {
   const borderColor = getBorderColor(accent)
   return (
-    <div className={cn("rounded-2xl border border-border bg-card p-5 shadow-sm transition-all border-l-4", borderColor, className)}>
+    <div
+      className={cn(
+        "rounded-2xl border border-l-4 border-border bg-card p-5 shadow-sm transition-all",
+        borderColor
+      )}
+    >
       <div className="flex min-w-0 items-start justify-between gap-3">
         <div className="min-w-0 flex-1 pr-1">
-          <p className="max-w-[15ch] text-[10px] font-bold uppercase leading-4 tracking-wider text-muted-foreground">
+          <p className="max-w-[15ch] text-[10px] leading-4 font-bold tracking-wider text-muted-foreground uppercase">
             {title}
           </p>
-          <p className="mt-2 text-2xl font-bold tracking-tight text-foreground">{value}</p>
+          <p className="mt-2 text-2xl font-bold tracking-tight text-foreground">
+            {value}
+          </p>
         </div>
         <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/40 text-muted-foreground shadow-sm">
           <Icon className="size-[18px]" />
@@ -133,7 +150,11 @@ export function DashboardPage() {
         }
 
         if (!response.success) {
-          setError("error" in response && response.error ? response.error : "Unable to load dashboard")
+          setError(
+            "error" in response && response.error
+              ? response.error
+              : "Unable to load dashboard"
+          )
           setOverview(null)
           return
         }
@@ -190,25 +211,34 @@ export function DashboardPage() {
   }, [overview?.recentTrips, search])
 
   const statusBreakdown = overview?.vehicleStatusBreakdown ?? []
-  const maxVehicleCount = Math.max(...statusBreakdown.map((item) => item.count), 1)
+  const maxVehicleCount = Math.max(
+    ...statusBreakdown.map((item) => item.count),
+    1
+  )
 
   const kpis = overview?.kpis
   const metricCards = [
     {
       title: "Active Vehicles",
-      value: isLoading ? "…" : numberFormatter.format(kpis?.activeVehicles ?? 0),
+      value: isLoading
+        ? "…"
+        : numberFormatter.format(kpis?.activeVehicles ?? 0),
       accent: "bg-sky-500",
       icon: Truck,
     },
     {
       title: "Available Vehicles",
-      value: isLoading ? "…" : numberFormatter.format(kpis?.availableVehicles ?? 0),
+      value: isLoading
+        ? "…"
+        : numberFormatter.format(kpis?.availableVehicles ?? 0),
       accent: "bg-emerald-500",
       icon: ShieldCheck,
     },
     {
       title: "Vehicles in Maintenance",
-      value: isLoading ? "…" : numberFormatter.format(kpis?.inMaintenanceVehicles ?? 0),
+      value: isLoading
+        ? "…"
+        : numberFormatter.format(kpis?.inMaintenanceVehicles ?? 0),
       accent: "bg-amber-500",
       icon: Building2,
     },
@@ -243,12 +273,12 @@ export function DashboardPage() {
       {/* Top Search bar block */}
       <div className="flex flex-col gap-4 rounded-2xl border border-border/80 bg-card p-4.5 shadow-sm xl:flex-row xl:items-center xl:justify-between">
         <div className="relative w-full max-w-xl">
-          <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search trips, vehicles, drivers..."
-            className="h-10 rounded-xl pl-10.5 text-xs py-5"
+            className="h-10 rounded-xl py-5 pl-10.5 text-xs"
           />
         </div>
 
@@ -256,7 +286,7 @@ export function DashboardPage() {
           <Button
             variant="outline"
             size="sm"
-            className="rounded-xl border-border hover:bg-muted text-muted-foreground hover:text-foreground py-4.5"
+            className="rounded-xl border-border py-4.5 text-muted-foreground hover:bg-muted hover:text-foreground"
             onClick={() => {
               setSearch("")
               setVehicleType("")
@@ -266,7 +296,7 @@ export function DashboardPage() {
           >
             Reset filters
           </Button>
-          <div className="rounded-xl border border-border bg-muted/20 px-3.5 py-2 font-semibold text-foreground text-[10px] uppercase tracking-wider">
+          <div className="rounded-xl border border-border bg-muted/20 px-3.5 py-2 text-[10px] font-semibold tracking-wider text-foreground uppercase">
             {overview?.filters.region ? overview.filters.region : "All regions"}
           </div>
         </div>
@@ -274,16 +304,18 @@ export function DashboardPage() {
 
       {/* Filter Section */}
       <div className="rounded-2xl border border-border/80 bg-card p-5 shadow-sm">
-        <div className="mb-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+        <div className="mb-3 text-[10px] font-bold tracking-wider text-muted-foreground uppercase">
           Filters
         </div>
         <div className="grid gap-3 md:grid-cols-2">
           <div className="relative">
             <Select
               value={vehicleType || "ALL"}
-              onValueChange={(value) => setVehicleType(value === "ALL" ? "" : (value as VehicleType))}
+              onValueChange={(value) =>
+                setVehicleType(value === "ALL" ? "" : (value as VehicleType))
+              }
             >
-              <SelectTrigger className="h-10 w-full rounded-xl pr-10 text-xs py-5 bg-background">
+              <SelectTrigger className="h-10 w-full rounded-xl bg-background py-5 pr-10 text-xs">
                 <SelectValue placeholder="Vehicle Type: All" />
               </SelectTrigger>
               <SelectContent>
@@ -300,7 +332,7 @@ export function DashboardPage() {
                 type="button"
                 aria-label="Clear vehicle type"
                 onClick={() => setVehicleType("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                className="absolute top-1/2 right-2 -translate-y-1/2 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 <X className="size-3.5" />
               </button>
@@ -310,9 +342,11 @@ export function DashboardPage() {
           <div className="relative">
             <Select
               value={status || "ALL"}
-              onValueChange={(value) => setStatus(value === "ALL" ? "" : (value as VehicleStatus))}
+              onValueChange={(value) =>
+                setStatus(value === "ALL" ? "" : (value as VehicleStatus))
+              }
             >
-              <SelectTrigger className="h-10 w-full rounded-xl pr-10 text-xs py-5 bg-background">
+              <SelectTrigger className="h-10 w-full rounded-xl bg-background py-5 pr-10 text-xs">
                 <SelectValue placeholder="Status: All" />
               </SelectTrigger>
               <SelectContent>
@@ -329,7 +363,7 @@ export function DashboardPage() {
                 type="button"
                 aria-label="Clear status"
                 onClick={() => setStatus("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                className="absolute top-1/2 right-2 -translate-y-1/2 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
               >
                 <X className="size-3.5" />
               </button>
@@ -347,9 +381,9 @@ export function DashboardPage() {
 
       {/* KPIs Grid */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {metricCards.map((card, index) => {
-          const isLastCard = index === metricCards.length - 1
-          const hasOddRemainder = metricCards.length % 4 === 1
+        {metricCards.map((card) => {
+          // const isLastCard = index === metricCards.length - 1
+          // const hasOddRemainder = metricCards.length % 4 === 1
           return (
             <DashboardMetricCard
               key={card.title}
@@ -357,7 +391,7 @@ export function DashboardPage() {
               value={card.value}
               accent={card.accent}
               icon={card.icon}
-              className={isLastCard && hasOddRemainder ? "xl:col-span-full 2xl:col-span-full" : undefined}
+              // className={isLastCard && hasOddRemainder ? "xl:col-span-full 2xl:col-span-full" : undefined}
             />
           )
         })}
@@ -366,24 +400,26 @@ export function DashboardPage() {
       {/* Main dashboard columns */}
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(320px,1fr)]">
         {/* Recent Trips table list */}
-        <section className="rounded-2xl border border-border/80 bg-card p-5 shadow-sm space-y-4">
+        <section className="space-y-4 rounded-2xl border border-border/80 bg-card p-5 shadow-sm">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              <h3 className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
                 Recent Trips
               </h3>
-              <p className="text-[11px] text-muted-foreground mt-0.5">Live operational dispatch activity</p>
+              <p className="mt-0.5 text-[11px] text-muted-foreground">
+                Live operational dispatch activity
+              </p>
             </div>
-            <div className="text-[10px] font-bold font-mono text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-lg border border-border/50">
+            <div className="rounded-lg border border-border/50 bg-muted/30 px-2 py-0.5 font-mono text-[10px] font-bold text-muted-foreground">
               {filteredTrips.length} of {overview?.recentTrips.length ?? 0}
             </div>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-border/80 shadow-sm bg-card">
+          <div className="overflow-hidden rounded-2xl border border-border/80 bg-card shadow-sm">
             <div className="overflow-x-auto">
               <table className="w-full border-collapse text-left text-xs">
                 <thead>
-                  <tr className="border-b border-border/85 bg-muted/30 text-muted-foreground font-semibold uppercase tracking-wider">
+                  <tr className="border-b border-border/85 bg-muted/30 font-semibold tracking-wider text-muted-foreground uppercase">
                     <th className="px-4 py-3.5">Trip</th>
                     <th className="px-4 py-3.5">Vehicle</th>
                     <th className="px-4 py-3.5">Driver</th>
@@ -395,28 +431,40 @@ export function DashboardPage() {
                 <tbody className="divide-y divide-border/70">
                   {isLoading ? (
                     <tr>
-                      <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
+                      <td
+                        colSpan={6}
+                        className="px-4 py-12 text-center text-muted-foreground"
+                      >
                         <Loader2 className="mx-auto mb-3 size-5 animate-spin text-primary" />
                         Loading dashboard records...
                       </td>
                     </tr>
                   ) : filteredTrips.length > 0 ? (
                     filteredTrips.map((trip) => (
-                      <tr key={trip.id} className="hover:bg-muted/10 transition-colors">
-                        <td className="px-4 py-3.5 font-mono text-muted-foreground font-semibold">
+                      <tr
+                        key={trip.id}
+                        className="transition-colors hover:bg-muted/10"
+                      >
+                        <td className="px-4 py-3.5 font-mono font-semibold text-muted-foreground">
                           {trip.id.substring(0, 8)}...
                         </td>
                         <td className="px-4 py-3.5">
-                          <div className="font-semibold text-foreground">{trip.vehicle?.registrationNumber ?? "—"}</div>
-                          <div className="text-[10px] text-muted-foreground">{trip.vehicle?.name ?? "—"}</div>
+                          <div className="font-semibold text-foreground">
+                            {trip.vehicle?.registrationNumber ?? "—"}
+                          </div>
+                          <div className="text-[10px] text-muted-foreground">
+                            {trip.vehicle?.name ?? "—"}
+                          </div>
                         </td>
                         <td className="px-4 py-3.5">
-                          <div className="font-semibold text-foreground">{trip.driver?.name ?? "—"}</div>
+                          <div className="font-semibold text-foreground">
+                            {trip.driver?.name ?? "—"}
+                          </div>
                           <div className="text-[10px] text-muted-foreground">
                             {trip.driver?.licenseNumber ?? "—"}
                           </div>
                         </td>
-                        <td className="px-4 py-3.5 text-foreground font-medium">
+                        <td className="px-4 py-3.5 font-medium text-foreground">
                           <div className="max-w-xs truncate">
                             {trip.source} → {trip.destination}
                           </div>
@@ -439,7 +487,10 @@ export function DashboardPage() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
+                      <td
+                        colSpan={6}
+                        className="px-4 py-12 text-center text-muted-foreground"
+                      >
                         No trips match the current filters.
                       </td>
                     </tr>
@@ -451,12 +502,14 @@ export function DashboardPage() {
         </section>
 
         {/* Aside status distribution graph bars */}
-        <aside className="rounded-2xl border border-border/80 bg-card p-5 shadow-sm space-y-4">
+        <aside className="space-y-4 rounded-2xl border border-border/80 bg-card p-5 shadow-sm">
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+            <h3 className="text-xs font-bold tracking-wider text-muted-foreground uppercase">
               Vehicle Status Breakdown
             </h3>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Fleet distribution statistics</p>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
+              Fleet distribution statistics
+            </p>
           </div>
 
           <div className="space-y-4 pt-2">
@@ -481,13 +534,20 @@ export function DashboardPage() {
                 return (
                   <div key={item.status} className="space-y-1.5">
                     <div className="flex items-center justify-between text-xs font-medium">
-                      <span className="text-foreground">{formatStatusLabel(item.status)}</span>
-                      <span className="font-mono font-bold text-foreground">{item.count}</span>
+                      <span className="text-foreground">
+                        {formatStatusLabel(item.status)}
+                      </span>
+                      <span className="font-mono font-bold text-foreground">
+                        {item.count}
+                      </span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <div className="h-3 flex-1 overflow-hidden rounded-full bg-muted/30 border border-border/20">
+                      <div className="h-3 flex-1 overflow-hidden rounded-full border border-border/20 bg-muted/30">
                         <div
-                          className={cn("h-full rounded-full transition-all duration-500", barColor)}
+                          className={cn(
+                            "h-full rounded-full transition-all duration-500",
+                            barColor
+                          )}
                           style={{ width }}
                         />
                       </div>
