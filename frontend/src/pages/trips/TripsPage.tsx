@@ -605,7 +605,14 @@ export function TripsPage() {
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger className="w-full rounded-xl text-xs py-5">
-                        <SelectValue placeholder="Select Vehicle" />
+                        <SelectValue placeholder="Select Vehicle">
+                          {field.value && availableVehicles.find((v) => v.id === field.value)
+                            ? (() => {
+                                const v = availableVehicles.find((v) => v.id === field.value)!
+                                return `${v.name} - ${v.maxLoadCapacityKg.toLocaleString()} kg capacity`
+                              })()
+                            : undefined}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {loadingOptions ? (
@@ -644,7 +651,11 @@ export function TripsPage() {
                   render={({ field }) => (
                     <Select value={field.value} onValueChange={field.onChange}>
                       <SelectTrigger className="w-full rounded-xl text-xs py-5">
-                        <SelectValue placeholder="Select Driver" />
+                        <SelectValue placeholder="Select Driver">
+                          {field.value && availableDrivers.find((d) => d.id === field.value)
+                            ? availableDrivers.find((d) => d.id === field.value)?.name
+                            : undefined}
+                        </SelectValue>
                       </SelectTrigger>
                       <SelectContent>
                         {loadingOptions ? (
