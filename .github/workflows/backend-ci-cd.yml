@@ -60,7 +60,8 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
 
       - name: Enable pnpm
         run: |
@@ -93,7 +94,8 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
 
       - name: Enable pnpm
         run: |
@@ -133,7 +135,8 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: npm
+          cache: pnpm
+          cache-dependency-path: backend/pnpm-lock.yaml
 
       - name: Enable pnpm
         run: |
