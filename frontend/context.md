@@ -31,6 +31,12 @@ FleetOS is designed to look modern, clean, and highly premium in both light and 
   - **Grey**: `OFF_DUTY` (drivers), `DRAFT` (trips).
 - **Table Design**: Condensed space layout with tracking-wider, semibold uppercase headings, alternating row layouts, and subtle borders (`border-border/80`).
 - **Recharts Custom Tooltips**: Standard chart tooltip cards render custom markup styled with Tailwind `bg-card/95`, `border-border/80`, and `backdrop-blur-sm` wrappers, providing 100% theme compatibility (light/dark mode) and color-coded keys representing dataset series.
+- **Header Layout & Controls**: Replaced basic header with an elevated layout containing:
+  - Circle profile initials avatar.
+  - User name, email details, and role badges.
+  - Dark/Light theme toggle switcher.
+  - Styled logout button.
+- **Brand Logo & Sidebar Styling**: Includes a modern geometric layered SVG control icon styled with a vibrant gradient overlay (`bg-gradient-to-tr from-primary to-purple-500` with soft drop shadows) coupled with brand name "FleetOS" utilizing gradient text overlays.
 
 ---
 
