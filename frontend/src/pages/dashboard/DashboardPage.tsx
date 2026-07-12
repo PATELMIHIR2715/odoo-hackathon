@@ -73,16 +73,14 @@ function DashboardMetricCard({
   value,
   accent,
   icon: Icon,
-  className,
 }: {
   title: string
   value: string
   accent: string
   icon: ComponentType<{ className?: string }>
-  className?: string
 }) {
   return (
-    <div className={cn("min-h-36 rounded-2xl border border-border/80 bg-card p-4 shadow-sm", className)}>
+    <div className="min-h-36 rounded-2xl border border-border/80 bg-card p-4 shadow-sm">
       <div className={cn("mb-4 h-1.5 w-16 rounded-full", accent)} />
       <div className="flex min-w-0 items-start justify-between gap-3">
         <div className="min-w-0 flex-1 pr-1">
@@ -357,21 +355,16 @@ export function DashboardPage() {
         </div>
       ) : null}
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {metricCards.map((card, index) => {
-          const isLastCard = index === metricCards.length - 1
-          const hasOddRemainder = metricCards.length % 4 === 1
-          return (
-            <DashboardMetricCard
-              key={card.title}
-              title={card.title}
-              value={card.value}
-              accent={card.accent}
-              icon={card.icon}
-              className={isLastCard && hasOddRemainder ? "xl:col-span-full 2xl:col-span-full" : undefined}
-            />
-          )
-        })}
+      <div className="grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(240px,1fr))]">
+        {metricCards.map((card) => (
+          <DashboardMetricCard
+            key={card.title}
+            title={card.title}
+            value={card.value}
+            accent={card.accent}
+            icon={card.icon}
+          />
+        ))}
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_minmax(320px,1fr)]">

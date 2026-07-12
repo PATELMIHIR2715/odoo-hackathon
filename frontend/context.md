@@ -6,7 +6,7 @@ This document provides a comprehensive overview of the **FleetOS** codebase, con
 
 ## 1. Tech Stack & Architectural Conventions
 
-- **Frontend Core**: React 18, Vite, TypeScript, TailwindCSS.
+- **Frontend Core**: React 19, Vite, TypeScript, TailwindCSS.
 - **State & Form Management**: React Hook Form with Zod schema resolvers.
 - **Routing**: React Router DOM (protected layout mapped via `<AppLayout>` shell).
 - **UI Primitives**: shadcn base-lyra components styled with `@base-ui/react`.
@@ -47,12 +47,15 @@ FleetOS is designed to look modern, clean, and highly premium in both light and 
 - **API/Services**: `src/api/vehicles.api.ts` & `src/services/vehicles.service.ts`
 - **UI Component**: `src/pages/vehicles/VehiclesPage.tsx`
 - **Features**: List table with type/status filters, creation modal, edit modal pre-populating details from GET by ID, and soft-delete/retire confirmation changing vehicle status to `RETIRED`.
+  - Search now supports registration number, vehicle code, manufacturer, and model.
+  - Pagination is driven by the `?page=` URL parameter and cleared when filters change.
 
 ### B. Drivers Module (`/drivers`)
 - **Types**: `src/types/driver.ts`
 - **API/Services**: `src/api/drivers.api.ts` & `src/services/drivers.service.ts`
 - **UI Component**: `src/pages/drivers/DriversPage.tsx`
 - **Features**: List table with search filter, details view modal, creation/edit modals (with date converters for HTML datepicker), and soft-delete/suspend confirmations. Displays expired license warning labels (`MM/YYYY EXPIRED` in bold red).
+  - Pagination is driven by the `?page=` URL parameter.
 
 ### C. Trips Module (`/trips`)
 - **Types**: `src/types/trip.ts`
@@ -63,6 +66,7 @@ FleetOS is designed to look modern, clean, and highly premium in both light and 
   - Dropdown options fetch active `AVAILABLE` vehicles and drivers when modal opens.
   - **Constraint-Based Dispatch Warning**: Exceeding the selected vehicle capacity displays a red alert and disables the Dispatch submit button, blocking dispatch but permitting draft saves.
   - **Complete Modal**: Collects actual distance and optional fuel stats, validating positive values.
+  - Pagination is driven by the `?page=` URL parameter.
 
 ### D. Maintenance Module (`/maintenance`)
 - **Types**: `src/types/maintenance.ts`
@@ -89,6 +93,7 @@ FleetOS is designed to look modern, clean, and highly premium in both light and 
   - Top row analytics metric cards tracking Fuel Efficiency (avg km/L), Utilization percent, operational cost sums, and Vehicle ROI metrics.
   - Stacked bar charts built using **Recharts** detailing month-over-month operating costs (Refueling, Maintenance, and Toll/Misc Expenses).
   - Top Costliest Vehicles list with custom progress indicator tracks reflecting the relative cost margins per vehicle.
+  - Dashboard overview now accepts vehicle type, status, and region filters.
 
 ---
 

@@ -48,7 +48,7 @@ When a phase changes state, update this table and the relevant sections below in
 - Vehicle, driver, and trip lists support search and filters that match the dispatcher/fleet screens.
 - Finance adds a `/finance/summary` endpoint for total fuel, expense, maintenance, and operational cost values.
 - Analytics adds a `/analytics/overview` endpoint for fuel efficiency, fleet utilization, operational cost, monthly trend, and top-costly-vehicle summaries.
-- Dashboard adds a `/dashboard/overview` endpoint that returns KPI cards, recent trips, and status breakdowns for the landing screen.
+- Dashboard adds `/dashboard/kpis` and `/dashboard/overview` endpoints that return KPI cards, recent trips, and status breakdowns for the landing screen.
 - Dashboard overview now supports vehicle type, status, and region filters so the cards and recent-trips table stay in sync.
 - Analytics adds a `/analytics/reports/monthly-trend` endpoint for the cost trend chart.
 - Smoke tests now cover health, not-found, and validation-error envelopes using the exported app.
@@ -120,7 +120,7 @@ All business endpoints are prefixed with `/api/v1` and require a valid access to
 | Fuel logs | `/fuel-logs` | Write: `ADMIN`, `FLEET_MANAGER`, `DRIVER` |
 | Expenses | `/expenses` | Write: `ADMIN`, `FLEET_MANAGER`, `DRIVER` |
 | Costs | `/vehicles/:id/total-cost` | Any authenticated role |
-| Dashboard | `/dashboard/kpis` | Any authenticated role |
+| Dashboard | `/dashboard/kpis`, `/dashboard/overview` | Any authenticated role |
 | Reports | `/reports/fuel-efficiency`, `/reports/fleet-utilization`, `/reports/operational-cost` | `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER` |
 
 Responses use the shared response helper and error handler. Success payloads are standardized as `{ success: true, message, data }`, and failures use the shared error envelope from `src/lib/response.ts`.

@@ -761,10 +761,12 @@ Authorization varies by route:
 - `GET /finance/expenses` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`, `DRIVER`
 - `POST /finance/expenses` - `ADMIN`, `FLEET_MANAGER`, `DRIVER`
 - `GET /dashboard/kpis` - any authenticated role
+- `GET /dashboard/overview` - any authenticated role
 - `GET /analytics/overview` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`
 - `GET /analytics/reports/fuel-efficiency` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`
 - `GET /analytics/reports/fleet-utilization` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`
 - `GET /analytics/reports/operational-cost` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`
+- `GET /analytics/reports/monthly-trend` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`
 
 ### `POST /finance/fuel-logs`
 
