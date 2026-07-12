@@ -8,7 +8,11 @@ export const driverIdParamSchema = z.object({
 export const driverStatusSchema = z.nativeEnum(DriverStatus);
 
 export const listDriversQuerySchema = z.object({
-  status: z.string().optional(),
+  search: z.string().trim().min(1).optional(),
+  status: z.preprocess(
+    (value) => (typeof value === "string" ? value.trim().toUpperCase() : value),
+    z.nativeEnum(DriverStatus),
+  ).optional(),
 });
 
 export const driverInputSchema = z.object({

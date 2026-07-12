@@ -8,11 +8,28 @@ import {
 } from "./driver.validation.js";
 
 export const driversService = {
-  async listDrivers(query: { status?: string }) {
+  async listDrivers(query: { search?: string; status?: DriverStatus }) {
     const status = query.status ? driverStatusSchema.parse(query.status) : undefined;
 
     return prisma.driver.findMany({
-      where: status ? { status } : {},
+      where: {
+        ...(status ? { status } : {}),
+        ...(query.search
+          ? {
+              OR: [
+                {
+                  name: { contains: query.search, mode: "insensitive" as const },
+                },
+                {
+                  licenseNumber: {
+                    contains: query.search,
+                    mode: "insensitive" as const,
+                  },
+                },
+              ],
+            }
+          : {}),
+      },
       orderBy: { createdAt: "desc" },
     });
   },
