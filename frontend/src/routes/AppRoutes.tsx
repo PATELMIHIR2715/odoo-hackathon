@@ -3,6 +3,7 @@ import { Navigate, Route, Routes } from "react-router-dom"
 import { AppLayout } from "@/components/layout/AppLayout"
 import { ProtectedRoute } from "@/routes/ProtectedRoute"
 import { DashboardPage } from "@/pages/dashboard/DashboardPage"
+import { VehiclesPage } from "@/pages/vehicles/VehiclesPage"
 import { LoginPage } from "@/pages/auth/LoginPage"
 import { useAuthStore } from "@/store/auth.store"
 
@@ -23,6 +24,7 @@ export function AppRoutes() {
       <Route element={<ProtectedRoute />}>
         <Route element={<AppLayout />}>
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/fleet" element={<VehiclesPage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} />
