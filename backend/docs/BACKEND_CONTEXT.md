@@ -48,6 +48,9 @@ When a phase changes state, update this table and the relevant sections below in
 - Vehicle, driver, and trip lists support search and filters that match the dispatcher/fleet screens.
 - Finance adds a `/finance/summary` endpoint for total fuel, expense, maintenance, and operational cost values.
 - Analytics adds a `/analytics/overview` endpoint for fuel efficiency, fleet utilization, operational cost, monthly trend, and top-costly-vehicle summaries.
+- Dashboard adds a `/dashboard/overview` endpoint that returns KPI cards, recent trips, and status breakdowns for the landing screen.
+- Dashboard overview now supports vehicle type, status, and region filters so the cards and recent-trips table stay in sync.
+- Analytics adds a `/analytics/reports/monthly-trend` endpoint for the cost trend chart.
 - Smoke tests now cover health, not-found, and validation-error envelopes using the exported app.
 - RBAC now uses module access arrays, route guards, and a settings RBAC module.
 
