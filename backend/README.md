@@ -14,6 +14,18 @@ npx prisma generate
 npm.cmd run dev
 ```
 
+To enable forgot-password emails, configure SMTP settings in `.env`:
+
+```powershell
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your-smtp-user
+SMTP_PASS=your-smtp-password
+MAIL_FROM="TransitOps <no-reply@example.com>"
+PASSWORD_RESET_PATH=/reset-password
+```
+
 To create the first administrator, set `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWORD` in the shell or `.env`, then run `npm.cmd run db:seed`.
 
 ## Authentication
@@ -26,6 +38,8 @@ To create the first administrator, set `SEED_ADMIN_EMAIL` and `SEED_ADMIN_PASSWO
 - `PATCH /api/v1/auth/me` — update display name; requires access token
 - `POST /api/v1/auth/change-password` — requires access token
 - `POST /api/v1/auth/forgot-password` and `POST /api/v1/auth/reset-password`
+
+`POST /api/v1/auth/forgot-password` sends a reset email when SMTP is configured. In non-production environments, the generated reset token is also returned in the response to simplify local testing.
 
 Register, login, and refresh return `{ data: { user, accessToken, refreshToken } }`. Send the access token as `Authorization: Bearer <accessToken>`. Refresh tokens rotate on every refresh and are stored hashed in the database.
 

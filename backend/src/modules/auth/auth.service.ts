@@ -10,6 +10,7 @@ import { Role, type Role as RoleType } from "@prisma/client";
 import { createHash, randomBytes } from "node:crypto";
 import { env } from "../../config/env.js";
 import { defaultModulesForRole } from "../../constants/modules.js";
+import { sendPasswordResetEmail } from "../../lib/mailer.js";
 
 const publicProfile = ({
   passwordHash,
@@ -151,6 +152,7 @@ export const authService = {
         passwordResetExpiresAt: new Date(Date.now() + 15 * 60 * 1000),
       },
     });
+    await sendPasswordResetEmail(profile.email, token);
     return env.NODE_ENV === "production" ? undefined : token;
   },
   async resetPassword(token: string, newPassword: string) {
