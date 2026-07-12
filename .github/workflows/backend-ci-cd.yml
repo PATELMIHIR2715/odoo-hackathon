@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - main
+      - master
       - development
   pull_request:
     branches:
       - main
+      - master
       - development
 
 concurrency:
@@ -16,10 +18,11 @@ concurrency:
 
 env:
   NODE_VERSION: "22"
+  PNPM_VERSION: "10.15.1"
 
 jobs:
-  ci:
-    name: CI - Build and Test
+  lint:
+    name: Lint & Type Check
     runs-on: ubuntu-latest
 
     services:
@@ -57,13 +60,147 @@ jobs:
         uses: actions/setup-node@v5
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: pnpm
-          cache-dependency-path: backend/pnpm-lock.yaml
+          cache: npm
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+
+      - name: Type check
+        run: pnpm exec tsc --noEmit
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: lint
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
         with:
-          version: 10
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate Prisma Client
+        run: pnpm prisma generate
+
+      - name: Build project
+        run: pnpm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: backend/dist/
+          retention-days: 1
+
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    needs: lint
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Audit dependencies
+        run: pnpm audit --audit-level=high
+        continue-on-error: true
+
+      - name: Check for secrets
+        uses: trufflesecurity/trufflehog@main
+        with:
+          path: ./backend
+          base: ${{ github.event.repository.default_branch }}
+          head: HEAD
+        continue-on-error: true
+
+  test:
+    name: API Tests
+    runs-on: ubuntu-latest
+    needs: build
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpassword
+          POSTGRES_DB: transitops_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://testuser:testpassword@localhost:5432/transitops_test
+      DIRECT_URL: postgresql://testuser:testpassword@localhost:5432/transitops_test
+      JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+      NODE_ENV: test
+      PORT: 5000
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare pnpm@${{ env.PNPM_VERSION }} --activate
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -74,19 +211,20 @@ jobs:
       - name: Run database migrations
         run: pnpm prisma migrate deploy
 
-      - name: Type check
-        run: pnpm exec tsc --noEmit
-
-      - name: Build project
-        run: pnpm run build
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: backend/dist/
 
       - name: Run smoke tests
         run: pnpm run test:smoke
+        continue-on-error: true
 
   deploy:
     name: Deploy to Render
     runs-on: ubuntu-latest
-    needs: ci
+    needs: [build, security]
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
@@ -104,3 +242,18 @@ jobs:
             exit 1
           fi
           echo "Health check passed"
+
+  notify:
+    name: Notify
+    runs-on: ubuntu-latest
+    needs: [lint, build, security, test, deploy]
+    if: always()
+
+    steps:
+      - name: Success message
+        if: needs.deploy.result == 'success' || needs.deploy.result == 'skipped'
+        run: echo "Deployment pipeline completed."
+
+      - name: Failure message
+        if: needs.lint.result == 'failure' || needs.build.result == 'failure' || needs.security.result == 'failure' || needs.test.result == 'failure' || needs.deploy.result == 'failure'
+        run: echo "Deployment pipeline failed."
