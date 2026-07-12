@@ -6,6 +6,7 @@ import { DashboardPage } from "@/pages/dashboard/DashboardPage"
 import { VehiclesPage } from "@/pages/vehicles/VehiclesPage"
 import { DriversPage } from "@/pages/drivers/DriversPage"
 import { TripsPage } from "@/pages/trips/TripsPage"
+import { MaintenancePage } from "@/pages/maintenance/MaintenancePage"
 import { LoginPage } from "@/pages/auth/LoginPage"
 import { useAuthStore } from "@/store/auth.store"
 
@@ -29,6 +30,7 @@ export function AppRoutes() {
           <Route path="/fleet" element={<VehiclesPage />} />
           <Route path="/drivers" element={<DriversPage />} />
           <Route path="/trips" element={<TripsPage />} />
+          <Route path="/maintenance" element={<MaintenancePage />} />
         </Route>
       </Route>
       <Route path="*" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />} />
