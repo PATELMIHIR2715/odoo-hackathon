@@ -95,6 +95,12 @@ FleetOS is designed to look modern, clean, and highly premium in both light and 
   - Top Costliest Vehicles list with custom progress indicator tracks reflecting the relative cost margins per vehicle.
   - Dashboard overview now accepts vehicle type, status, and region filters.
 
+### G. Dashboard Module (`/dashboard`)
+- **UI Component**: `src/pages/dashboard/DashboardPage.tsx`
+- **Features**:
+  - Aligned style metrics with left vertical card borders, gradient progress distributions, and table formats.
+  - Filters vehicle types and status configurations in 2 columns (Region text filter input removed).
+
 ---
 
 ## 4. Important Implementation Gotchas
