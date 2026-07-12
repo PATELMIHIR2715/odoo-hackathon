@@ -753,6 +753,7 @@ Success `200`: closed maintenance record.
 
 Authorization varies by route:
 
+- `GET /finance/summary` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`, `DRIVER`
 - `GET /finance/fuel-logs` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`, `DRIVER`
 - `POST /finance/fuel-logs` - `ADMIN`, `FLEET_MANAGER`, `DRIVER`
 - `GET /finance/expenses` - `ADMIN`, `FINANCIAL_ANALYST`, `FLEET_MANAGER`, `DRIVER`
@@ -791,6 +792,25 @@ Success `200`:
       "total": 0,
       "totalPages": 0
     }
+  }
+}
+```
+
+### `GET /finance/summary`
+
+Query params: `vehicleId`
+
+Success `200`:
+
+```json
+{
+  "success": true,
+  "message": "SUCCESS",
+  "data": {
+    "fuelCost": 0,
+    "expenseCost": 0,
+    "maintenanceCost": 0,
+    "totalOperationalCost": 0
   }
 }
 ```
