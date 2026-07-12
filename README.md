@@ -1,3 +1,9 @@
+# Testing Credentials
+
+- email — mayur@example.com
+- password — StrongPassword123!
+- role — Admin
+
 # TransitOps
 
 TransitOps is a fleet operations platform split into a TypeScript backend and a React frontend.
@@ -51,4 +57,3 @@ Repository layout:
 - `/fuel-expenses`
 - `/analytics`
 - `/settings`
-
