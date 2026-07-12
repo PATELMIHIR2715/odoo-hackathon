@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -145,7 +145,7 @@ export function SettingsPage() {
 
   const roleDefaults = useMemo(() => rbacData?.roleDefaults ?? null, [rbacData])
 
-  const loadOrgSettings = async () => {
+  const loadOrgSettings = useCallback(async () => {
     setLoadingOrg(true)
     try {
       const response = await getOrganizationSettingsService()
@@ -160,9 +160,9 @@ export function SettingsPage() {
     } finally {
       setLoadingOrg(false)
     }
-  }
+  }, [reset])
 
-  const loadRbacData = async () => {
+  const loadRbacData = useCallback(async () => {
     setLoadingRbac(true)
     try {
       const response = await getSettingsRbacService()
@@ -176,16 +176,15 @@ export function SettingsPage() {
     } finally {
       setLoadingRbac(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
     if (!isAdmin) {
       return
     }
 
-    void loadOrgSettings()
-    void loadRbacData()
-  }, [isAdmin, reset])
+    void Promise.all([loadOrgSettings(), loadRbacData()])
+  }, [isAdmin, loadOrgSettings, loadRbacData])
 
   const handleOrgSave = async (values: OrganizationSettingsFormValues) => {
     setSavingOrg(true)

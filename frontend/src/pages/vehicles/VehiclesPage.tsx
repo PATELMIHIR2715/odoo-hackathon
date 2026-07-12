@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -139,7 +139,7 @@ export function VehiclesPage() {
   })
 
   // Fetch all vehicles based on active filters
-  const fetchVehicles = async () => {
+  const fetchVehicles = useCallback(async () => {
     setLoading(true)
     try {
       const params: { type?: string; status?: string; search?: string; page?: number; pageSize?: number } = {
@@ -162,11 +162,11 @@ export function VehiclesPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [pageFilter, searchFilter, statusFilter, typeFilter])
 
   useEffect(() => {
-    fetchVehicles()
-  }, [typeFilter, statusFilter, searchFilter, pageFilter])
+    void fetchVehicles()
+  }, [fetchVehicles])
 
   // Filter handlers updating URL Search Params
   const handleTypeChange = (value: string | null) => {

@@ -24,7 +24,7 @@ export interface LoginResponseData extends AuthTokens {
   user: AuthUser
 }
 
-export interface CurrentUserResponseData extends AuthUser {}
+export type CurrentUserResponseData = AuthUser
 
 export type LoginResponse = ApiResponse<LoginResponseData>
 export type CurrentUserResponse = ApiResponse<CurrentUserResponseData>

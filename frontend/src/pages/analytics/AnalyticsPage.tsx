@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Loader2 } from "lucide-react"
 import {
   BarChart,
@@ -16,12 +16,24 @@ import { getAnalyticsOverviewService } from "@/services/analytics.service"
 import type { AnalyticsOverviewData } from "@/types/analytics"
 import { extractErrorMessage } from "@/lib/error"
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+type ChartTooltipPayloadItem = {
+  name: string
+  value: number
+  fill: string
+}
+
+type CustomTooltipProps = {
+  active?: boolean
+  payload?: ChartTooltipPayloadItem[]
+  label?: string
+}
+
+const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
   if (active && payload && payload.length) {
     return (
       <div className="rounded-xl border border-border bg-card/95 p-3 shadow-md backdrop-blur-sm text-xs space-y-1.5 text-card-foreground">
         <p className="font-semibold text-foreground border-b border-border/80 pb-1 mb-1">{label}</p>
-        {payload.map((p: any) => (
+        {payload.map((p) => (
           <div key={p.name} className="flex items-center justify-between gap-4 font-medium">
             <span className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full" style={{ backgroundColor: p.fill }} />
@@ -40,7 +52,7 @@ export function AnalyticsPage() {
   const [data, setData] = useState<AnalyticsOverviewData | null>(null)
   const [loading, setLoading] = useState(true)
 
-  const fetchAnalytics = async () => {
+  const fetchAnalytics = useCallback(async () => {
     setLoading(true)
     try {
       const response = await getAnalyticsOverviewService()
@@ -54,11 +66,11 @@ export function AnalyticsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   useEffect(() => {
-    fetchAnalytics()
-  }, [])
+    void fetchAnalytics()
+  }, [fetchAnalytics])
 
   if (loading) {
     return (
