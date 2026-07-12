@@ -5,18 +5,108 @@ import { parseUuid, assertVehicleAndDriverForTrip } from "../shared/operations.s
 import { tripCompletionSchema, tripInputSchema, tripStatusSchema } from "./trip.validation.js";
 
 export const tripsService = {
-  async listTrips(query: { status?: string; driverId?: string; vehicleId?: string }) {
+  async listTrips(query: {
+    search?: string;
+    status?: TripStatus;
+    driverId?: string;
+    vehicleId?: string;
+    page: number;
+    pageSize: number;
+    sortBy: "createdAt" | "updatedAt" | "source" | "destination" | "status";
+    sortOrder: "asc" | "desc";
+  }) {
     const where = {
       ...(query.status ? { status: tripStatusSchema.parse(query.status) } : {}),
       ...(query.driverId ? { driverId: query.driverId } : {}),
       ...(query.vehicleId ? { vehicleId: query.vehicleId } : {}),
+      ...(query.search
+        ? {
+            OR: [
+              { source: { contains: query.search, mode: "insensitive" as const } },
+              { destination: { contains: query.search, mode: "insensitive" as const } },
+              {
+                vehicle: {
+                  is: {
+                    OR: [
+                      {
+                        registrationNumber: {
+                          contains: query.search,
+                          mode: "insensitive" as const,
+                        },
+                      },
+                      { name: { contains: query.search, mode: "insensitive" as const } },
+                      {
+                        vehicleCode: {
+                          contains: query.search,
+                          mode: "insensitive" as const,
+                        },
+                      },
+                    ],
+                  },
+                },
+              },
+              {
+                driver: {
+                  is: {
+                    name: { contains: query.search, mode: "insensitive" as const },
+                  },
+                },
+              },
+            ],
+          }
+        : {}),
     };
 
-    return prisma.trip.findMany({
-      where,
-      include: { vehicle: true, driver: true },
-      orderBy: { createdAt: "desc" },
-    });
+    const [total, items] = await Promise.all([
+      prisma.trip.count({ where }),
+      prisma.trip.findMany({
+        where,
+        include: { vehicle: true, driver: true },
+        orderBy: { [query.sortBy]: query.sortOrder },
+        skip: (query.page - 1) * query.pageSize,
+        take: query.pageSize,
+      }),
+    ]);
+
+    return {
+      items,
+      pagination: {
+        page: query.page,
+        pageSize: query.pageSize,
+        total,
+        totalPages: Math.ceil(total / query.pageSize),
+      },
+    };
+  },
+
+  async getTripBoard() {
+    const [items, counts, vehicles, drivers] = await Promise.all([
+      prisma.trip.findMany({
+        include: { vehicle: true, driver: true },
+        orderBy: { updatedAt: "desc" },
+        take: 10,
+      }),
+      prisma.trip.groupBy({
+        by: ["status"],
+        _count: { _all: true },
+      }),
+      prisma.vehicle.count({ where: { status: VehicleStatus.AVAILABLE } }),
+      prisma.driver.count({
+        where: { status: DriverStatus.AVAILABLE, licenseExpiryDate: { gt: new Date() } },
+      }),
+    ]);
+
+    return {
+      items,
+      counts: counts.reduce<Record<string, number>>((acc, row) => {
+        acc[row.status] = row._count._all;
+        return acc;
+      }, {}),
+      availableResources: {
+        vehicles,
+        drivers,
+      },
+    };
   },
 
   async getTripById(id: string) {

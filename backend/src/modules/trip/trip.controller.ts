@@ -7,6 +7,10 @@ export const listTrips: RequestHandler = async (req, res) => {
   return successResponse(res, await tripsService.listTrips(listTripsQuerySchema.parse(req.query)));
 };
 
+export const getTripBoard: RequestHandler = async (_req, res) => {
+  return successResponse(res, await tripsService.getTripBoard());
+};
+
 export const getTrip: RequestHandler = async (req, res) => {
   return successResponse(res, await tripsService.getTripById(tripIdParamSchema.parse(req.params).id));
 };

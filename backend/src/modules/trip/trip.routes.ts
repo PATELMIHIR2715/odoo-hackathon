@@ -9,12 +9,19 @@ import {
   createTrip,
   dispatchTrip,
   getTrip,
+  getTripBoard,
   listTrips,
 } from "./trip.controller.js";
 
 export const tripsRouter = Router();
 
 tripsRouter.use(allowModules(APP_MODULES.TRIPS));
+
+tripsRouter.get(
+  "/board",
+  allowRoles(Role.ADMIN, Role.DRIVER, Role.SAFETY_OFFICER),
+  asyncHandler(getTripBoard),
+);
 
 tripsRouter.get(
   "/",

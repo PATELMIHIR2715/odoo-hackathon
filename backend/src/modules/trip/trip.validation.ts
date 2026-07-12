@@ -8,9 +8,17 @@ export const tripIdParamSchema = z.object({
 export const tripStatusSchema = z.nativeEnum(TripStatus);
 
 export const listTripsQuerySchema = z.object({
-  status: z.string().optional(),
+  search: z.string().trim().min(1).optional(),
+  status: z.preprocess(
+    (value) => (typeof value === "string" ? value.trim().toUpperCase() : value),
+    z.nativeEnum(TripStatus),
+  ).optional(),
   driverId: z.string().uuid().optional(),
   vehicleId: z.string().uuid().optional(),
+  page: z.coerce.number().int().min(1).default(1),
+  pageSize: z.coerce.number().int().min(1).max(100).default(10),
+  sortBy: z.enum(["createdAt", "updatedAt", "source", "destination", "status"]).default("createdAt"),
+  sortOrder: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export const tripInputSchema = z.object({
