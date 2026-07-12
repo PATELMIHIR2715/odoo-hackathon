@@ -80,13 +80,11 @@ function DashboardMetricCard({
   value,
   accent,
   icon: Icon,
-  className,
 }: {
   title: string
   value: string
   accent: string
   icon: ComponentType<{ className?: string }>
-  className?: string
 }) {
   const borderColor = getBorderColor(accent)
   return (
