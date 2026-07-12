@@ -6,6 +6,7 @@ import { APP_MODULES } from "../../constants/modules.js";
 import {
   createExpense,
   createFuelLog,
+  getFinanceSummary,
   listExpenses,
   listFuelLogs,
 } from "./finance.controller.js";
@@ -13,6 +14,12 @@ import {
 export const financeRouter = Router();
 
 financeRouter.use(allowModules(APP_MODULES.FUEL_EXPENSES));
+
+financeRouter.get(
+  "/summary",
+  allowRoles(Role.ADMIN, Role.FINANCIAL_ANALYST, Role.FLEET_MANAGER, Role.DRIVER),
+  asyncHandler(getFinanceSummary),
+);
 
 financeRouter.get(
   "/fuel-logs",

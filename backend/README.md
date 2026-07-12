@@ -88,6 +88,7 @@ Why:
 - For Gmail, `SMTP_PASS` must be a Google App Password, not your normal account password.
 - In development, forgot-password requests return the reset token in the response so you can test without opening email.
 - List endpoints for vehicles, drivers, trips, maintenance, fuel logs, and expenses return paginated `{ items, pagination }` payloads.
+- Vehicles, drivers, and trips also support search/filter query params for the table and dispatcher screens.
 - In development, Prisma and other known backend errors keep their useful message and metadata instead of collapsing into a generic internal error.
 - `Profile.moduleAccess` stores module access as an array.
 - `role` remains for coarse identity and policy.
@@ -213,4 +214,3 @@ The GitHub Actions deploy job uses:
 - Keep route contracts updated in `docs/route-doc.md`.
 - Keep architecture rules updated in `docs/ARCHITECTURE_RULES.md`.
 - Keep current decisions in `docs/BACKEND_CONTEXT.md`.
-
