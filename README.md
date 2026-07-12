@@ -1,3 +1,13 @@
+⚠️ Note
+
+Our backend is deployed on Render using the free tier. Because of this, the server may go into a sleep state after a period of inactivity.
+
+- The first API request (such as the login API) may take up to 50–60 seconds to respond while the server wakes up.
+- During the hackathon, if the login screen appears unresponsive, please wait for about a minute. The application will continue once the backend is active.
+- We also forgot to add a loading animation on the login screen, so there is no visual indication while the request is in progress. We apologize for this inconvenience.
+
+Thank you for your patience and understanding.
+
 # Testing Credentials
 
 - email — mayur@example.com
