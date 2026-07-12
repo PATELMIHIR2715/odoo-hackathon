@@ -63,6 +63,17 @@ FleetOS is designed to look modern, clean, and highly premium in both light and 
 - **UI Component**: `src/pages/maintenance/MaintenancePage.tsx`
 - **Features**: Tracks workshop logs. Forms select active non-retired vehicles, validating cost inputs. Confirms closing open workshop records to mark as `CLOSED` and stamps completion time.
 
+### E. Fuel & Expenses Module (`/fuel-expenses`)
+- **Types**: `src/types/finance.ts`
+- **API/Services**: `src/api/finance.api.ts` & `src/services/finance.service.ts`
+- **UI Component**: `src/pages/finance/FuelExpensesPage.tsx`
+- **Features**:
+  - Tabbed operational overview matching the mockup screenshot.
+  - **Fuel Logs table** displays vehicle name, dates, liters count, and fuel cost (Rupees format).
+  - **Other Expenses table** links trip logs and lists tolls, maintenance, and other expenses logged for the vehicles.
+  - **Total Operational Cost box** aggregates and sums fuel and maintenance costs dynamically at the bottom.
+  - Log dialogs allow logging refueling entries and custom expenses.
+
 ---
 
 ## 4. Important Implementation Gotchas
