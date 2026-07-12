@@ -8,16 +8,37 @@ import {
 } from "./maintenance.validation.js";
 
 export const maintenanceService = {
-  async listMaintenance(query: { vehicleId?: string; status?: string }) {
-    return prisma.maintenanceLog.findMany({
-      where: {
-        ...(query.vehicleId ? { vehicleId: query.vehicleId } : {}),
-        ...(query.status
-          ? { status: maintenanceStatusSchema.parse(query.status) }
-          : {}),
+  async listMaintenance(query: {
+    vehicleId?: string;
+    status?: MaintenanceStatus;
+    page: number;
+    pageSize: number;
+  }) {
+    const where = {
+      ...(query.vehicleId ? { vehicleId: query.vehicleId } : {}),
+      ...(query.status ? { status: maintenanceStatusSchema.parse(query.status) } : {}),
+    };
+
+    const [total, items] = await Promise.all([
+      prisma.maintenanceLog.count({ where }),
+      prisma.maintenanceLog.findMany({
+        where,
+        include: { vehicle: true },
+        orderBy: { openedAt: "desc" },
+        skip: (query.page - 1) * query.pageSize,
+        take: query.pageSize,
+      }),
+    ]);
+
+    return {
+      items,
+      pagination: {
+        page: query.page,
+        pageSize: query.pageSize,
+        total,
+        totalPages: Math.ceil(total / query.pageSize),
       },
-      include: { vehicle: true },
-    });
+    };
   },
 
   async createMaintenanceLog(input: unknown) {

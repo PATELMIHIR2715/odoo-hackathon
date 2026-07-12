@@ -14,6 +14,8 @@ export const vehiclesService = {
     status?: VehicleStatus;
     type?: VehicleType;
     region?: string;
+    page: number;
+    pageSize: number;
   }) {
     const where = {
       ...(query.status ? { status: vehicleStatusSchema.parse(query.status) } : {}),
@@ -21,7 +23,25 @@ export const vehiclesService = {
       ...(query.region ? { region: String(query.region) } : {}),
     };
 
-    return prisma.vehicle.findMany({ where, orderBy: { createdAt: "desc" } });
+    const [total, items] = await Promise.all([
+      prisma.vehicle.count({ where }),
+      prisma.vehicle.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip: (query.page - 1) * query.pageSize,
+        take: query.pageSize,
+      }),
+    ]);
+
+    return {
+      items,
+      pagination: {
+        page: query.page,
+        pageSize: query.pageSize,
+        total,
+        totalPages: Math.ceil(total / query.pageSize),
+      },
+    };
   },
 
   async listAvailableVehicles() {

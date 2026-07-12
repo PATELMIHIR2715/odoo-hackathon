@@ -8,30 +8,52 @@ import {
 } from "./driver.validation.js";
 
 export const driversService = {
-  async listDrivers(query: { search?: string; status?: DriverStatus }) {
+  async listDrivers(query: {
+    search?: string;
+    status?: DriverStatus;
+    page: number;
+    pageSize: number;
+  }) {
     const status = query.status ? driverStatusSchema.parse(query.status) : undefined;
 
-    return prisma.driver.findMany({
-      where: {
-        ...(status ? { status } : {}),
-        ...(query.search
-          ? {
-              OR: [
-                {
-                  name: { contains: query.search, mode: "insensitive" as const },
+    const where = {
+      ...(status ? { status } : {}),
+      ...(query.search
+        ? {
+            OR: [
+              {
+                name: { contains: query.search, mode: "insensitive" as const },
+              },
+              {
+                licenseNumber: {
+                  contains: query.search,
+                  mode: "insensitive" as const,
                 },
-                {
-                  licenseNumber: {
-                    contains: query.search,
-                    mode: "insensitive" as const,
-                  },
-                },
-              ],
-            }
-          : {}),
+              },
+            ],
+          }
+        : {}),
+    };
+
+    const [total, items] = await Promise.all([
+      prisma.driver.count({ where }),
+      prisma.driver.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip: (query.page - 1) * query.pageSize,
+        take: query.pageSize,
+      }),
+    ]);
+
+    return {
+      items,
+      pagination: {
+        page: query.page,
+        pageSize: query.pageSize,
+        total,
+        totalPages: Math.ceil(total / query.pageSize),
       },
-      orderBy: { createdAt: "desc" },
-    });
+    };
   },
 
   async listAvailableDrivers() {
