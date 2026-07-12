@@ -4,6 +4,11 @@
 - password — StrongPassword123!
 - role — Admin
 
+# Working Live URLS
+
+- Frontend — odoo-hackathon-beige-xi.vercel.app
+- Backend — https://odoo-hackathon-qryn.onrender.com
+
 # TransitOps
 
 TransitOps is a fleet operations platform split into a TypeScript backend and a React frontend.
