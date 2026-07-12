@@ -12,7 +12,6 @@ import {
   Trash2,
   Eye,
   Loader2,
-  Info,
   ChevronLeft,
   ChevronRight,
 } from "lucide-react"

@@ -47,25 +47,32 @@ function formatStatusLabel(value: string) {
 function statusTone(value: string) {
   switch (value) {
     case "AVAILABLE":
-      return "bg-emerald-500/15 text-emerald-700 ring-emerald-500/25 dark:text-emerald-300"
+      return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full text-[10px] font-semibold"
     case "ON_TRIP":
     case "DISPATCHED":
-      return "bg-sky-500/15 text-sky-700 ring-sky-500/25 dark:text-sky-300"
+      return "bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20 px-2.5 py-0.5 rounded-full text-[10px] font-semibold"
     case "IN_SHOP":
     case "OPEN":
-      return "bg-amber-500/15 text-amber-700 ring-amber-500/25 dark:text-amber-300"
+      return "bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 px-2.5 py-0.5 rounded-full text-[10px] font-semibold"
     case "RETIRED":
     case "CANCELLED":
-      return "bg-rose-500/15 text-rose-700 ring-rose-500/25 dark:text-rose-300"
+      return "bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20 px-2.5 py-0.5 rounded-full text-[10px] font-semibold"
     case "COMPLETED":
-      return "bg-lime-500/15 text-lime-700 ring-lime-500/25 dark:text-lime-300"
+      return "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-2.5 py-0.5 rounded-full text-[10px] font-semibold"
     case "DRAFT":
-      return "bg-slate-500/15 text-slate-700 ring-slate-500/25 dark:text-slate-300"
+      return "bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border border-zinc-500/20 px-2.5 py-0.5 rounded-full text-[10px] font-semibold"
     case "OFF_DUTY":
-      return "bg-zinc-500/15 text-zinc-700 ring-zinc-500/25 dark:text-zinc-300"
+      return "bg-zinc-500/10 text-zinc-600 dark:text-zinc-400 border border-zinc-500/20 px-2.5 py-0.5 rounded-full text-[10px] font-semibold"
     default:
-      return "bg-muted text-muted-foreground ring-border/70"
+      return "bg-muted text-muted-foreground ring-border/70 text-[10px] font-semibold"
   }
+}
+
+const getBorderColor = (accent: string) => {
+  if (accent.includes("sky")) return "border-l-sky-500"
+  if (accent.includes("emerald")) return "border-l-emerald-500"
+  if (accent.includes("amber")) return "border-l-amber-500"
+  return "border-l-primary"
 }
 
 function DashboardMetricCard({
@@ -81,17 +88,17 @@ function DashboardMetricCard({
   icon: ComponentType<{ className?: string }>
   className?: string
 }) {
+  const borderColor = getBorderColor(accent)
   return (
-    <div className={cn("min-h-36 rounded-2xl border border-border/80 bg-card p-4 shadow-sm", className)}>
-      <div className={cn("mb-4 h-1.5 w-16 rounded-full", accent)} />
+    <div className={cn("rounded-2xl border border-border bg-card p-5 shadow-sm transition-all border-l-4", borderColor, className)}>
       <div className="flex min-w-0 items-start justify-between gap-3">
         <div className="min-w-0 flex-1 pr-1">
-          <p className="max-w-[12ch] text-[11px] font-medium uppercase leading-4 tracking-[0.2em] text-muted-foreground">
+          <p className="max-w-[15ch] text-[10px] font-bold uppercase leading-4 tracking-wider text-muted-foreground">
             {title}
           </p>
-          <p className="mt-2 text-3xl font-semibold tracking-tight">{value}</p>
+          <p className="mt-2 text-2xl font-bold tracking-tight text-foreground">{value}</p>
         </div>
-        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border/70 bg-muted/40 text-muted-foreground">
+        <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/40 text-muted-foreground shadow-sm">
           <Icon className="size-[18px]" />
         </div>
       </div>
@@ -235,14 +242,15 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 rounded-2xl border border-border/80 bg-card p-4 shadow-sm xl:flex-row xl:items-center xl:justify-between">
+      {/* Top Search bar block */}
+      <div className="flex flex-col gap-4 rounded-2xl border border-border/80 bg-card p-4.5 shadow-sm xl:flex-row xl:items-center xl:justify-between">
         <div className="relative w-full max-w-xl">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Search trips, vehicles, drivers..."
-            className="h-10 rounded-xl pl-10 text-sm"
+            className="h-10 rounded-xl pl-10.5 text-xs py-5"
           />
         </div>
 
@@ -250,7 +258,7 @@ export function DashboardPage() {
           <Button
             variant="outline"
             size="sm"
-            className="rounded-xl"
+            className="rounded-xl border-border hover:bg-muted text-muted-foreground hover:text-foreground py-4.5"
             onClick={() => {
               setSearch("")
               setVehicleType("")
@@ -260,27 +268,28 @@ export function DashboardPage() {
           >
             Reset filters
           </Button>
-          <div className="rounded-full border border-border/70 bg-muted/40 px-3 py-1.5">
+          <div className="rounded-xl border border-border bg-muted/20 px-3.5 py-2 font-semibold text-foreground text-[10px] uppercase tracking-wider">
             {overview?.filters.region ? overview.filters.region : "All regions"}
           </div>
         </div>
       </div>
 
-      <div className="rounded-2xl border border-border/80 bg-card p-4 shadow-sm">
-        <div className="mb-3 text-sm font-medium uppercase tracking-[0.2em] text-muted-foreground">
+      {/* Filter Section */}
+      <div className="rounded-2xl border border-border/80 bg-card p-5 shadow-sm">
+        <div className="mb-3 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
           Filters
         </div>
-        <div className="grid gap-3 md:grid-cols-3">
+        <div className="grid gap-3 md:grid-cols-2">
           <div className="relative">
             <Select
               value={vehicleType || "ALL"}
               onValueChange={(value) => setVehicleType(value === "ALL" ? "" : (value as VehicleType))}
             >
-              <SelectTrigger className="h-10 w-full rounded-xl pr-10 text-sm">
+              <SelectTrigger className="h-10 w-full rounded-xl pr-10 text-xs py-5 bg-background">
                 <SelectValue placeholder="Vehicle Type: All" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ALL">All</SelectItem>
+                <SelectItem value="ALL">All types</SelectItem>
                 {vehicleTypeOptions.map((option) => (
                   <SelectItem key={option.label} value={option.value}>
                     {option.label}
@@ -305,11 +314,11 @@ export function DashboardPage() {
               value={status || "ALL"}
               onValueChange={(value) => setStatus(value === "ALL" ? "" : (value as VehicleStatus))}
             >
-              <SelectTrigger className="h-10 w-full rounded-xl pr-10 text-sm">
+              <SelectTrigger className="h-10 w-full rounded-xl pr-10 text-xs py-5 bg-background">
                 <SelectValue placeholder="Status: All" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="ALL">All</SelectItem>
+                <SelectItem value="ALL">All statuses</SelectItem>
                 {vehicleStatusOptions.map((option) => (
                   <SelectItem key={option.label} value={option.value}>
                     {option.label}
@@ -328,35 +337,17 @@ export function DashboardPage() {
               </button>
             ) : null}
           </div>
-
-          <div className="relative">
-            <Input
-              value={region}
-              onChange={(event) => setRegion(event.target.value)}
-              placeholder="Region: All"
-              className="h-10 rounded-xl pr-10 text-sm"
-            />
-            {region ? (
-              <button
-                type="button"
-                aria-label="Clear region"
-                onClick={() => setRegion("")}
-                className="absolute right-2 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-              >
-                <X className="size-3.5" />
-              </button>
-            ) : null}
-          </div>
         </div>
       </div>
 
       {error ? (
-        <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 p-5 text-sm text-rose-700 dark:text-rose-300">
-          <p className="font-medium">Dashboard unavailable</p>
+        <div className="rounded-2xl border border-rose-500/30 bg-rose-500/10 p-5 text-xs text-rose-700 dark:text-rose-300">
+          <p className="font-semibold">Dashboard unavailable</p>
           <p className="mt-1">{error}</p>
         </div>
       ) : null}
 
+      {/* KPIs Grid */}
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {metricCards.map((card, index) => {
           const isLastCard = index === metricCards.length - 1
@@ -374,73 +365,70 @@ export function DashboardPage() {
         })}
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1.7fr)_minmax(320px,1fr)]">
-        <section className="rounded-2xl border border-border/80 bg-card p-4 shadow-sm">
+      {/* Main dashboard columns */}
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1.7fr)_minmax(320px,1fr)]">
+        {/* Recent Trips table list */}
+        <section className="rounded-2xl border border-border/80 bg-card p-5 shadow-sm space-y-4">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
                 Recent Trips
               </h3>
-              <p className="mt-1 text-sm text-muted-foreground">Live operational activity</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">Live operational dispatch activity</p>
             </div>
-            <div className="text-xs text-muted-foreground">
+            <div className="text-[10px] font-bold font-mono text-muted-foreground bg-muted/30 px-2 py-0.5 rounded-lg border border-border/50">
               {filteredTrips.length} of {overview?.recentTrips.length ?? 0}
             </div>
           </div>
 
-          <div className="mt-4 overflow-hidden rounded-2xl border border-border/70">
+          <div className="overflow-hidden rounded-2xl border border-border/80 shadow-sm bg-card">
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-border/70 text-left">
-                <thead className="bg-muted/30 text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
-                  <tr>
-                    <th className="px-4 py-3 font-medium">Trip</th>
-                    <th className="px-4 py-3 font-medium">Vehicle</th>
-                    <th className="px-4 py-3 font-medium">Driver</th>
-                    <th className="px-4 py-3 font-medium">Route</th>
-                    <th className="px-4 py-3 font-medium">Status</th>
-                    <th className="px-4 py-3 font-medium">ETA</th>
+              <table className="w-full border-collapse text-left text-xs">
+                <thead>
+                  <tr className="border-b border-border/85 bg-muted/30 text-muted-foreground font-semibold uppercase tracking-wider">
+                    <th className="px-4 py-3.5">Trip</th>
+                    <th className="px-4 py-3.5">Vehicle</th>
+                    <th className="px-4 py-3.5">Driver</th>
+                    <th className="px-4 py-3.5">Route</th>
+                    <th className="px-4 py-3.5">Status</th>
+                    <th className="px-4 py-3.5">ETA</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-border/70">
                   {isLoading ? (
                     <tr>
-                      <td colSpan={6} className="px-4 py-10 text-center text-sm text-muted-foreground">
-                        <Loader2 className="mx-auto mb-3 size-5 animate-spin" />
-                        Loading dashboard...
+                      <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
+                        <Loader2 className="mx-auto mb-3 size-5 animate-spin text-primary" />
+                        Loading dashboard records...
                       </td>
                     </tr>
                   ) : filteredTrips.length > 0 ? (
                     filteredTrips.map((trip) => (
-                      <tr key={trip.id} className="bg-background/40">
-                        <td className="px-4 py-3">
-                          <div className="font-medium">{trip.id}</div>
+                      <tr key={trip.id} className="hover:bg-muted/10 transition-colors">
+                        <td className="px-4 py-3.5 font-mono text-muted-foreground font-semibold">
+                          {trip.id.substring(0, 8)}...
                         </td>
-                        <td className="px-4 py-3">
-                          <div className="font-medium">{trip.vehicle?.registrationNumber ?? "—"}</div>
-                          <div className="text-xs text-muted-foreground">{trip.vehicle?.name ?? "—"}</div>
+                        <td className="px-4 py-3.5">
+                          <div className="font-semibold text-foreground">{trip.vehicle?.registrationNumber ?? "—"}</div>
+                          <div className="text-[10px] text-muted-foreground">{trip.vehicle?.name ?? "—"}</div>
                         </td>
-                        <td className="px-4 py-3">
-                          <div className="font-medium">{trip.driver?.name ?? "—"}</div>
-                          <div className="text-xs text-muted-foreground">
+                        <td className="px-4 py-3.5">
+                          <div className="font-semibold text-foreground">{trip.driver?.name ?? "—"}</div>
+                          <div className="text-[10px] text-muted-foreground">
                             {trip.driver?.licenseNumber ?? "—"}
                           </div>
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-3.5 text-foreground font-medium">
                           <div className="max-w-xs truncate">
                             {trip.source} → {trip.destination}
                           </div>
                         </td>
-                        <td className="px-4 py-3">
-                          <span
-                            className={cn(
-                              "inline-flex items-center rounded-full px-2.5 py-1 text-[11px] font-medium ring-1 ring-inset",
-                              statusTone(trip.status)
-                            )}
-                          >
+                        <td className="px-4 py-3.5">
+                          <span className={cn(statusTone(trip.status))}>
                             {formatStatusLabel(trip.status)}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-sm text-muted-foreground">
+                        <td className="px-4 py-3.5 text-xs text-muted-foreground">
                           {trip.status === "COMPLETED"
                             ? "Completed"
                             : trip.status === "CANCELLED"
@@ -453,7 +441,7 @@ export function DashboardPage() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={6} className="px-4 py-12 text-center text-sm text-muted-foreground">
+                      <td colSpan={6} className="px-4 py-12 text-center text-muted-foreground">
                         No trips match the current filters.
                       </td>
                     </tr>
@@ -464,50 +452,53 @@ export function DashboardPage() {
           </div>
         </section>
 
-        <aside className="rounded-2xl border border-border/80 bg-card p-4 shadow-sm">
+        {/* Aside status distribution graph bars */}
+        <aside className="rounded-2xl border border-border/80 bg-card p-5 shadow-sm space-y-4">
           <div>
-            <h3 className="text-sm font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-              Vehicle Status
+            <h3 className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              Vehicle Status Breakdown
             </h3>
-            <p className="mt-1 text-sm text-muted-foreground">Fleet distribution by current status</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Fleet distribution statistics</p>
           </div>
 
-          <div className="mt-5 space-y-4">
+          <div className="space-y-4 pt-2">
             {isLoading ? (
-              <div className="rounded-2xl border border-dashed border-border/80 p-8 text-center text-sm text-muted-foreground">
-                <Loader2 className="mx-auto mb-3 size-5 animate-spin" />
+              <div className="rounded-2xl border border-dashed border-border/85 p-8 text-center text-muted-foreground">
+                <Loader2 className="mx-auto mb-3 size-5 animate-spin text-primary" />
                 Loading status summary...
               </div>
             ) : statusBreakdown.length > 0 ? (
               statusBreakdown.map((item) => {
                 const width = `${Math.max((item.count / maxVehicleCount) * 100, item.count > 0 ? 10 : 0)}%`
 
+                let barColor = "bg-rose-500/70 border border-rose-500/25"
+                if (item.status === "AVAILABLE") {
+                  barColor = "bg-emerald-500/70 border border-emerald-500/25"
+                } else if (item.status === "ON_TRIP") {
+                  barColor = "bg-sky-500/70 border border-sky-500/25"
+                } else if (item.status === "IN_SHOP") {
+                  barColor = "bg-amber-500/70 border border-amber-500/25"
+                }
+
                 return (
-                  <div key={item.status} className="grid grid-cols-[90px_minmax(0,1fr)] items-center gap-3">
-                    <div className="text-sm text-muted-foreground">{formatStatusLabel(item.status)}</div>
+                  <div key={item.status} className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs font-medium">
+                      <span className="text-foreground">{formatStatusLabel(item.status)}</span>
+                      <span className="font-mono font-bold text-foreground">{item.count}</span>
+                    </div>
                     <div className="flex items-center gap-3">
-                      <div className="h-3 flex-1 overflow-hidden rounded-full bg-muted">
+                      <div className="h-3 flex-1 overflow-hidden rounded-full bg-muted/30 border border-border/20">
                         <div
-                          className={cn(
-                            "h-full rounded-full",
-                            item.status === "AVAILABLE"
-                              ? "bg-emerald-500"
-                              : item.status === "ON_TRIP"
-                                ? "bg-sky-500"
-                                : item.status === "IN_SHOP"
-                                  ? "bg-amber-500"
-                                  : "bg-rose-500"
-                          )}
+                          className={cn("h-full rounded-full transition-all duration-500", barColor)}
                           style={{ width }}
                         />
                       </div>
-                      <div className="w-10 text-right text-xs text-muted-foreground">{item.count}</div>
                     </div>
                   </div>
                 )
               })
             ) : (
-              <div className="rounded-2xl border border-dashed border-border/80 p-8 text-center text-sm text-muted-foreground">
+              <div className="rounded-2xl border border-dashed border-border/85 p-8 text-center text-muted-foreground">
                 No vehicle status data available.
               </div>
             )}
